@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Admission Architect | Global Education Consultants</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Hide default body padding for the landing page so hero touches the top */
+        body { padding-top: 0 !important; padding-left: 0 !important; }
+
+        /* Article Grid for Profile Building */
+        .article-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .teaser-box {
+            background: #F3E5F5;
+            border-left: 4px solid #8E44AD;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 900px) {
+            .article-split { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .teaser-box { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="landing-navbar" id="navbar">
+        <a href="/" class="nav-brand" style="color: white; text-decoration: none;">
+            <img src="/images/logo.png" alt="Logo" style="filter: brightness(0) invert(1); height: 50px; transition: all 0.3s;" id="navLogo" onerror="this.src='https://via.placeholder.com/50'">
+            <span style="font-size: 22px; transition: all 0.3s;" id="navText">Admission Arch.</span>
+        </a>
+
+        <ul class="landing-nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="#profile-building">Profile Building</a></li>
+            <li><a href="#services">Our Services</a></li>
+            <li><a href="#extra-mile">Extra Mile</a></li>
+            <li><a href="/login" style="color: #FFC107; font-weight: bold;">Student Login</a></li>
+        </ul>
+
+        <div>
+            <button class="enquire-btn" onclick="openModal()">ENQUIRE NOW</button>
+        </div>
+    </nav>
+
+    <header class="landing-hero">
+        <h1>Mentors. Strategists. Dream Enablers.</h1>
+        <p>We offer end-to-end guidance that opens doors to top global universities. Expert profile building, elite test prep, and personalized admissions strategy.</p>
+        <div class="hero-btns">
+            <a href="/login" class="calc-btn-primary" style="display: inline-block; width: auto; padding: 16px 45px; font-size: 18px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
+                Start Your Journey ➜
+            </a>
+        </div>
+    </header>
+
+    <section class="stats-section fade-in-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3 class="counter" data-target="12000">0</h3>
+                <p>Students Placed</p>
+            </div>
+            <div class="stat-item">
+                <h3 class="counter" data-target="800">0</h3>
+                <p>University Partners</p>
+            </div>
+            <div class="stat-item">
+                <h3 class="counter" data-target="75">0</h3>
+                <p>Nationalities</p>
+            </div>
+            <div class="stat-item">
+                <h3>$<span class="counter" data-target="10">0</span>M+</h3>
+                <p>Scholarships Secured</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile-building" style="padding: 100px 20px; background: white;" class="fade-in-section">
+        <div class="article-split">
+            <div>
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Students studying" style="width: 100%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            </div>
+            <div>
+                <h2 style="font-size: 36px; color: #333; margin-bottom: 20px;">What is Profile Building? 🚀</h2>
+                <p style="color: #666; font-size: 18px; line-height: 1.7; margin-bottom: 15px;">
+                    Top-tier universities like Oxford, Cambridge, and the Ivy League look for much more than just perfect grades. They are searching for future leaders, innovators, and changemakers.
+                </p>
+                <p style="color: #666; font-size: 16px; line-height: 1.7;">
+                    Profile building is the strategic process of shaping your academic and extracurricular narrative. From securing high-impact internships and publishing research papers, to launching social initiatives—we help you craft a profile that makes admission officers sit up and take notice.
+                </p>
+                
+                <div class="teaser-box">
+                    <p style="margin: 0; color: #555; font-size: 14px; font-weight: bold;">
+                        <i class="material-icons" style="font-size: 16px; color: #8E44AD; vertical-align: middle;">lock</i> 
+                        Unlock our exclusive 1-Year Foundation and 2-Year Masterclass mentorship packages, including pricing and complete roadmaps, inside the student portal.
+                    </p>
+                </div>
+                
+                <a href="/login" class="calc-btn-primary" style="display: inline-block; width: auto; padding: 14px 35px; font-size: 16px; background: #8E44AD;">
+                    Sign In to View Packages ➜
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="landing-services" style="background: #F9FAFB;">
+        <div class="services-container">
+            <div class="section-title fade-in-section">
+                <h2>Skills That Shape Futures</h2>
+                <p>Every student emerges with unshakeable clarity, ironclad confidence, and the strategic mindset to thrive in tomorrow's world.</p>
+            </div>
+
+            <div class="extra-mile-grid">
+                <div class="em-card fade-in-section">
+                    <div class="em-icon" style="background: #E3F2FD; color: #1976D2;"><i class="material-icons" style="font-size:32px;">account_balance</i></div>
+                    <h3 style="margin: 0 0 15px 0; color: #333;">University Admissions</h3>
+                    <p style="color: #666; line-height: 1.6;">Strategic university shortlisting, essay reviews, and comprehensive application support for the Ivy League, Oxbridge, and beyond.</p>
+                </div>
+
+                <div class="em-card fade-in-section" style="transition-delay: 0.1s;">
+                    <div class="em-icon" style="background: #F3E5F5; color: #8E44AD;"><i class="material-icons" style="font-size:32px;">quiz</i></div>
+                    <h3 style="margin: 0 0 15px 0; color: #333;">Test Preparation</h3>
+                    <p style="color: #666; line-height: 1.6;">Crack the test, own the future. Expert coaching for IELTS, TOEFL, SAT, GRE, and GMAT with our interactive AI-powered modules.</p>
+                </div>
+
+                <div class="em-card fade-in-section" style="transition-delay: 0.2s;">
+                    <div class="em-icon" style="background: #FFF3E0; color: #E65100;"><i class="material-icons" style="font-size:32px;">psychology</i></div>
+                    <h3 style="margin: 0 0 15px 0; color: #333;">Profile Mentorship</h3>
+                    <p style="color: #666; line-height: 1.6;">Go beyond grades. We help you secure high-impact internships, publish research, and develop leadership skills that stand out.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="extra-mile" style="padding: 100px 20px; background: white;" class="fade-in-section">
+        <div class="services-container">
+            <div class="section-title">
+                <h2>The Extra Mile Services 🌟</h2>
+                <p>We support you until you are safely settled in your new home abroad.</p>
+            </div>
+
+            <div class="extra-mile-grid">
+                <a href="/login" class="em-card" style="text-decoration: none;">
+                    <div class="em-icon"><i class="material-icons" style="font-size:30px;">king_bed</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Accommodation Support</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Book a session with our housing advisors to find safe, affordable student housing or private rentals.</p>
+                </a>
+
+                <a href="/login" class="em-card" style="text-decoration: none;">
+                    <div class="em-icon" style="color: #4CAF50; background: #E8F5E9;"><i class="material-icons" style="font-size:30px;">fact_check</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Visa Support</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Get expert guidance on Tier-4 student visa requirements, financial documents, and mock interviews.</p>
+                </a>
+
+                <a href="/login" class="em-card" style="text-decoration: none;">
+                    <div class="em-icon" style="color: #FF9800; background: #FFF3E0;"><i class="material-icons" style="font-size:30px;">flight_land</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Airport Transfers</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Arrange a secure pickup from any UK airport directly to your university accommodation.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section fade-in-section" style="text-align: center; padding: 100px 20px; background: #1976D2; color: white;">
+        <h2 style="font-size: 42px; margin: 0 0 20px 0;">Ready to secure your future?</h2>
+        <p style="font-size: 20px; opacity: 0.9; margin-bottom: 40px;">Join thousands of successful students who trusted The Admission Architect.</p>
+        <a href="/login" class="calc-btn-primary" style="background: white; color: #1976D2; display: inline-block; width: auto; padding: 15px 40px; font-size: 18px;">
+            Create Your Free Account
+        </a>
+    </section>
+
+    <%- include('partials/footer') %>
+
+    <div class="modal-overlay" id="enquireModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            
+            <h2>Start Your Journey</h2>
+            <p>Fill out the form below and an expert counselor will contact you within 24 hours.</p>
+
+
+            
+            <form class="modal-form" id="leadForm" onsubmit="submitLead(event)">
+    <input type="text" name="name" placeholder="Full Name *" required>
+    <input type="email" name="email" placeholder="Email Address *" required>
+    <input type="tel" name="phone" placeholder="Phone Number (with Country Code) *" required>
+    
+    <select name="destination" required>
+        <option value="" disabled selected>Preferred Study Destination *</option>
+        <option value="UK">United Kingdom</option>
+        <option value="USA">United States</option>
+        <option value="Canada">Canada</option>
+        <option value="Australia">Australia</option>
+        <option value="Europe">Europe</option>
+    </select>
+
+    <select name="level" required>
+        <option value="" disabled selected>Study Level *</option>
+        <option value="Bachelors">Bachelors (Undergraduate)</option>
+        <option value="Masters">Masters (Postgraduate)</option>
+        <option value="PhD">PhD</option>
+    </select>
+
+    <button type="submit" class="calc-btn-primary" id="submitBtn" style="border:none; margin-top: 10px; cursor: pointer;">
+        Submit Enquiry
+    </button>
+</form>
+          
+            
+            <div id="successMessage" style="display: none; text-align: center; padding: 20px 0;">
+                <i class="material-icons" style="font-size: 48px; color: #4CAF50; margin-bottom: 10px;">check_circle</i>
+                <h3 style="color: #333; margin:0;">Thank You!</h3>
+                <p style="color: #666; margin-top: 5px;">We have received your details. Our team will reach out to you shortly.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const logo = document.getElementById('navLogo');
+            const text = document.getElementById('navText');
+            // Select all links in the center navbar
+            const links = document.querySelectorAll('.landing-nav-links a:not([href="/login"])');
+            
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+                logo.style.filter = 'none'; // Revert to colored logo
+                text.style.color = '#1976D2';
+            } else {
+                nav.classList.remove('scrolled');
+                logo.style.filter = 'brightness(0) invert(1)'; // Make white
+                text.style.color = 'white';
+            }
+        });
+
+        // 2. Scroll Animation Observer (Fade In Elements)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-section').forEach((el) => observer.observe(el));
+
+        // 3. Number Counter Animation for Stats
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200; 
+
+        const countObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = +counter.getAttribute('data-target');
+                    
+                    const updateCount = () => {
+                        const count = +counter.innerText.replace(/\D/g, ''); 
+                        const inc = target / speed;
+
+                        if (count < target) {
+                            counter.innerText = Math.ceil(count + inc) + (target > 1000 ? '+' : '');
+                            setTimeout(updateCount, 15);
+                        } else {
+                            counter.innerText = target + (target >= 75 ? '+' : '');
+                            if (target === 12000) counter.innerText = "12k+"; 
+                        }
+                    };
+                    updateCount();
+                    observer.unobserve(counter); 
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => countObserver.observe(counter));
+
+        // 4. Modal Logic
+        const modal = document.getElementById('enquireModal');
+        const leadForm = document.getElementById('leadForm');
+        const successMsg = document.getElementById('successMessage');
+
+        function openModal() {
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                leadForm.style.display = 'flex';
+                successMsg.style.display = 'none';
+                leadForm.reset();
+                document.getElementById('submitBtn').innerText = "Submit Enquiry";
+                document.getElementById('submitBtn').style.opacity = "1";
+            }, 300); 
+        }
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        async function submitLead(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.innerText = "Sending...";
+    btn.style.opacity = "0.7";
+
+    const formData = new FormData(leadForm);
+    const body = Object.fromEntries(formData.entries());
+
+    try {
+        const res = await fetch('/enquire', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+            leadForm.style.display = 'none';
+            successMsg.style.display = 'block';
+            setTimeout(() => closeModal(), 3000);
+        } else {
+            btn.innerText = "Submit Enquiry";
+            btn.style.opacity = "1";
+            alert(data.error || 'Something went wrong. Please try again.');
+        }
+    } catch (err) {
+        btn.innerText = "Submit Enquiry";
+        btn.style.opacity = "1";
+        alert('Failed to submit. Please try again.');
+    }
+}
+    </script>
+</body>
+</html>

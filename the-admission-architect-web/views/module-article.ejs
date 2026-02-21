@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= article.title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 40px;
+        }
+
+        .article-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .article-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background-color: <%= article.color %>;
+        }
+
+        .article-header h1 { margin: 0; color: #333; font-size: 28px; }
+
+        .article-body h3 { color: <%= article.color %>; margin-top: 30px; }
+        .article-body p { color: #555; line-height: 1.8; font-size: 16px; margin-bottom: 15px;}
+        .article-body ul { color: #555; line-height: 1.8; margin-bottom: 20px;}
+        .article-body li { margin-bottom: 8px; }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: #5A7B95;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
+        /* Dark Mode Support */
+        body.dark-mode .article-container { background: #1E1E1E; }
+        body.dark-mode .article-header { border-bottom-color: #333; }
+        body.dark-mode .article-header h1 { color: #fff; }
+        body.dark-mode .article-body p, body.dark-mode .article-body ul { color: #ccc; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/test-modules" class="back-btn">
+            <i class="material-icons" style="font-size: 18px;">arrow_back</i> Back to Modules
+        </a>
+
+        <div class="article-container">
+            <div class="article-header">
+                <div class="article-icon">
+                    <i class="material-icons" style="font-size: 35px;"><%= article.icon %></i>
+                </div>
+                <h1><%= article.title %></h1>
+            </div>
+
+            <div class="article-body">
+                <%- article.content %>
+            </div>
+            
+            <div style="margin-top: 50px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
+                <p style="color: #999; font-size: 13px;">Information provided by The Admission Architect Academic Team</p>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/navbar') %>
+
+</body>
+</html>

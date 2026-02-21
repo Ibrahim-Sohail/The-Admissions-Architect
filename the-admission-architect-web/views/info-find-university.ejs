@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Your University | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style> body { padding-top: 0 !important; } </style>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <header class="landing-hero" style="height: 60vh; background: linear-gradient(to right, rgba(25, 118, 210, 0.9), rgba(33, 150, 243, 0.7)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+        <h1 style="font-size: 50px;">Find Your Dream University</h1>
+        <p>Data-driven matching to ensure you apply to the best schools for your profile.</p>
+    </header>
+
+    <div class="container" style="max-width: 900px; padding: 60px 20px;">
+        <h2 style="color: #333;">How We Help You Find The Right Fit</h2>
+        <p style="color: #666; font-size: 18px; line-height: 1.8; margin-bottom: 30px;">
+            With thousands of global universities, choosing the right one is overwhelming. Our expert counselors use a strategic filtering system based on your academics, budget, and career goals to build a personalized shortlist. We consider acceptance rates, scholarship availability, and post-graduation employment stats.
+        </p>
+
+        <div style="text-align: center; background: #E3F2FD; padding: 40px; border-radius: 16px; border: 2px solid #1976D2;">
+            <h2 style="margin-top: 0; color: #1976D2;">Ready to explore?</h2>
+            <p style="color: #555; margin-bottom: 25px;">Use our interactive Uni Finder tool inside the student portal to browse top universities instantly.</p>
+            <a href="/login" class="calc-btn-primary" style="display: inline-block; width: auto; padding: 15px 40px;">Sign In & Find a Uni</a>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

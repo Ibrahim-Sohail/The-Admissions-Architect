@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My History | Admission Architect</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .page-header { margin-bottom: 25px; }
+        .page-header h2 { margin: 0 0 5px; color: #333; }
+        .page-header p  { margin: 0; color: #888; font-size: 14px; }
+
+        /* Toggle between chat / tests */
+        .view-toggle { display: flex; gap: 5px; background: white; padding: 6px; border-radius: 12px;
+                       box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px; width: fit-content; }
+        .toggle-btn { background: none; border: none; padding: 10px 22px; border-radius: 8px;
+                      font-size: 14px; font-weight: 600; cursor: pointer; color: #666;
+                      display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .toggle-btn.active { background: #5A7B95; color: white; }
+
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* ── Chat ── */
+        .chat-date-group { margin-bottom: 30px; }
+        .chat-date-label { font-size: 12px; font-weight: 700; color: #aaa; text-transform: uppercase;
+                           letter-spacing: 1px; margin-bottom: 12px; text-align: center; }
+        .chat-list { display: flex; flex-direction: column; gap: 10px; }
+        .chat-row-u { display: flex; justify-content: flex-end; }
+        .chat-row-a { display: flex; justify-content: flex-start; }
+        .bubble { padding: 11px 15px; border-radius: 16px; max-width: 72%; font-size: 14px; line-height: 1.6; }
+        .bubble-u { background: #5A7B95; color: white; border-radius: 16px 16px 4px 16px; }
+        .bubble-a { background: #f0f0f0; color: #333; border-radius: 16px 16px 16px 4px; }
+        .bubble-time { font-size: 11px; opacity: 0.55; margin-top: 4px; display: block; }
+
+        /* ── Test History ── */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid #ddd;
+                      background: white; font-size: 13px; cursor: pointer; font-weight: 500;
+                      transition: all 0.2s; color: #555; }
+        .filter-btn.active { border-color: #5A7B95; background: #5A7B95; color: white; }
+
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th { background: #f8f9fa; padding: 12px 15px; text-align: left;
+                            font-size: 12px; color: #666; text-transform: uppercase;
+                            letter-spacing: 0.5px; border-bottom: 2px solid #eee; }
+        .history-table td { padding: 13px 15px; border-bottom: 1px solid #f5f5f5;
+                            font-size: 14px; vertical-align: middle; }
+        .history-table tr:last-child td { border-bottom: none; }
+        .history-table tr.hidden-row { display: none; }
+
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px;
+                 font-size: 11px; font-weight: bold; }
+        .badge-gre   { background: #E0F7FA; color: #00838F; }
+        .badge-ielts { background: #F3E5F5; color: #7B1FA2; }
+
+        .score-bar-wrap { display: flex; align-items: center; gap: 10px; }
+        .score-bar { height: 6px; border-radius: 3px; background: #e0e0e0;
+                     flex: 1; min-width: 50px; overflow: hidden; }
+        .score-bar-fill { height: 100%; border-radius: 3px;
+                          background: linear-gradient(90deg, #5A7B95, #448AFF); }
+
+        .empty-state { text-align: center; padding: 50px 20px; color: #bbb; }
+        .empty-state i { font-size: 52px; display: block; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header">
+        <h2>📋 My History</h2>
+        <p>Review your past conversations and test results.</p>
+    </div>
+
+    <!-- Toggle -->
+    <div class="view-toggle">
+        <button class="toggle-btn active" id="btnChat" onclick="switchView('chat')">
+            <i class="material-icons" style="font-size:16px;">forum</i> Chat History
+        </button>
+        <button class="toggle-btn" id="btnTests" onclick="switchView('tests')">
+            <i class="material-icons" style="font-size:16px;">quiz</i> Test History
+        </button>
+    </div>
+
+    <!-- ══ CHAT HISTORY ══ -->
+    <div id="viewChat" class="view-section active">
+        <% if (chatHistory && chatHistory.length > 0) { %>
+
+            <%
+              // Group messages by date
+              const groups = {};
+              chatHistory.forEach(function(msg) {
+                  const day = msg.timestamp ? msg.timestamp.split(' ')[0] : 'Unknown';
+                  if (!groups[day]) groups[day] = [];
+                  groups[day].push(msg);
+              });
+            %>
+
+            <% Object.keys(groups).forEach(function(day) { %>
+            <div class="chat-date-group">
+                <div class="chat-date-label"><%= day %></div>
+                <div class="chat-list">
+                    <% groups[day].forEach(function(msg) { %>
+                    <div class="<%= msg.role === 'user' ? 'chat-row-u' : 'chat-row-a' %>">
+                        <div class="bubble <%= msg.role === 'user' ? 'bubble-u' : 'bubble-a' %>">
+                            <%= msg.content %>
+                            <span class="bubble-time">
+                                <%= msg.timestamp ? msg.timestamp.split(' ')[1] : '' %>
+                            </span>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% }); %>
+
+            <div style="text-align:center; padding: 20px 0;">
+                <a href="/chat" class="btn" style="display:inline-block; width:auto;">Continue Chatting →</a>
+            </div>
+
+        <% } else { %>
+        <div class="empty-state">
+            <i class="material-icons">forum</i>
+            <p>No chat history yet.</p>
+            <a href="/chat" class="btn" style="display:inline-block; width:auto; margin-top:10px;">Start a Conversation</a>
+        </div>
+        <% } %>
+    </div>
+
+    <!-- ══ TEST HISTORY ══ -->
+    <div id="viewTests" class="view-section">
+
+        <% if (testHistory && testHistory.length > 0) { %>
+
+        <!-- Filter buttons -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterTests('all', this)">All</button>
+            <button class="filter-btn" onclick="filterTests('IELTS', this)">IELTS</button>
+            <button class="filter-btn" onclick="filterTests('GRE', this)">GRE</button>
+        </div>
+
+        <div class="card" style="padding:0; overflow:hidden;">
+            <table class="history-table" id="testTable">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Module</th>
+                        <th>Score</th>
+                        <th>Feedback</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% testHistory.forEach(function(item) { %>
+                    <tr class="test-row" data-type="<%= item.test_type %>">
+                        <td>
+                            <span class="badge <%= item.test_type === 'GRE' ? 'badge-gre' : 'badge-ielts' %>">
+                                <%= item.test_type %>
+                            </span>
+                        </td>
+                        <td style="font-weight:500;"><%= item.module %></td>
+                        <td>
+                            <div class="score-bar-wrap">
+                                <strong style="min-width:28px;"><%= item.score %></strong>
+                                <div class="score-bar">
+                                    <div class="score-bar-fill"
+                                         style="width:<%= Math.min(item.score / 9 * 100, 100) %>%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="color:#666; font-size:13px; max-width:200px;">
+                            <%= item.feedback
+                                ? item.feedback.substring(0, 65) + (item.feedback.length > 65 ? '…' : '')
+                                : '—' %>
+                        </td>
+                        <td style="color:#aaa; font-size:13px; white-space:nowrap;">
+                            <%= item.date %>
+                        </td>
+                    </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <% } else { %>
+        <div class="empty-state">
+            <i class="material-icons">quiz</i>
+            <p>No test history yet.</p>
+            <a href="/test-modules" class="btn" style="display:inline-block; width:auto; margin-top:10px;">
+                Take a Test
+            </a>
+        </div>
+        <% } %>
+
+    </div>
+</div>
+
+<%- include('partials/navbar') %>
+
+<script>
+    function switchView(view) {
+        document.getElementById('viewChat').classList.toggle('active', view === 'chat');
+        document.getElementById('viewTests').classList.toggle('active', view === 'tests');
+        document.getElementById('btnChat').classList.toggle('active', view === 'chat');
+        document.getElementById('btnTests').classList.toggle('active', view === 'tests');
+    }
+
+    function filterTests(type, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.test-row').forEach(row => {
+            row.classList.toggle('hidden-row', type !== 'all' && row.dataset.type !== type);
+        });
+    }
+</script>
+</body>
+</html>

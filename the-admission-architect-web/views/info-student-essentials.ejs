@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Essentials | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style> body { padding-top: 0 !important; } </style>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <header class="landing-hero" style="height: 60vh; background: linear-gradient(to right, rgba(142, 68, 173, 0.9), rgba(156, 39, 176, 0.7)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+        <h1 style="font-size: 50px;">Student Essentials in the UK</h1>
+        <p>Everything you need to know about living, studying, and adapting.</p>
+    </header>
+
+    <div class="container" style="max-width: 900px; padding: 60px 20px;">
+        
+        <div style="margin-bottom: 40px;">
+            <h3 style="color: #8E44AD; border-bottom: 2px solid #eee; padding-bottom: 10px;">🏠 Living</h3>
+            <p style="color: #555; line-height: 1.8;">Setting up your life in the UK starts with opening a student bank account (like Monzo or Barclays), registering with a local GP (doctor) for NHS access, and securing a local SIM card (like GiffGaff or EE) in your first week.</p>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <h3 style="color: #8E44AD; border-bottom: 2px solid #eee; padding-bottom: 10px;">📚 Studying</h3>
+            <p style="color: #555; line-height: 1.8;">The UK academic culture highly values independent study and critical thinking. You will have fewer contact hours than high school, meaning you must manage your time effectively in the library. Plagiarism is strictly monitored.</p>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <h3 style="color: #8E44AD; border-bottom: 2px solid #eee; padding-bottom: 10px;">☔ Weather & Clothing</h3>
+            <p style="color: #555; line-height: 1.8;">The UK weather is famously unpredictable. The key to surviving is layering. You will need a high-quality waterproof jacket, sturdy walking shoes, and warm layers for the winter months (November to February).</p>
+        </div>
+
+        <div style="text-align: center; background: #F3E5F5; padding: 40px; border-radius: 16px;">
+            <h2 style="margin-top: 0; color: #8E44AD;">Get personalized pre-departure support</h2>
+            <a href="/login" class="calc-btn-primary" style="background: #8E44AD; display: inline-block; width: auto; padding: 15px 40px;">Sign In to Portal</a>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

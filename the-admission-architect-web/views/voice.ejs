@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Voice Consultant</title>
+</head>
+<body>
+    <div class="container" style="text-align:center; padding-top:50px;">
+        <h3 id="statusText">Tap the microphone to start speaking</h3>
+        
+        <br><br>
+        <div id="visualizer" style="display:flex; justify-content:center; height:50px; align-items:flex-end; gap:5px;">
+            <div class="bar" style="width:10px; height:10px; background:#9C27B0;"></div>
+            <div class="bar" style="width:10px; height:10px; background:#9C27B0;"></div>
+            <div class="bar" style="width:10px; height:10px; background:#9C27B0;"></div>
+            <div class="bar" style="width:10px; height:10px; background:#9C27B0;"></div>
+            <div class="bar" style="width:10px; height:10px; background:#9C27B0;"></div>
+        </div>
+
+        <br><br>
+        <div onclick="toggleMic()" style="width:80px; height:80px; background:#9C27B0; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; cursor:pointer; color:white;">
+            <i class="material-icons" style="font-size:40px;">mic</i>
+        </div>
+    </div>
+    <%- include('partials/navbar') %>
+
+    <script>
+        let isListening = false;
+        function toggleMic() {
+            isListening = !isListening;
+            document.getElementById('statusText').innerText = isListening ? "Listening..." : "Tap mic to speak";
+            
+            // Simple animation loop for the bars
+            const bars = document.getElementsByClassName('bar');
+            if(isListening) {
+                for(let bar of bars) {
+                    bar.style.height = Math.floor(Math.random() * 50) + 10 + "px";
+                    bar.style.transition = "0.2s";
+                }
+                // Simulate response after 3 seconds
+                setTimeout(() => {
+                    isListening = false;
+                    document.getElementById('statusText').innerText = "I heard you! Great pronunciation.";
+                }, 3000);
+            } else {
+                for(let bar of bars) bar.style.height = "10px";
+            }
+        }
+    </script>
+</body>
+</html>

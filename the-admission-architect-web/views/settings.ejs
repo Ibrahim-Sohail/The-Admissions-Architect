@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Local Styles for Settings Page */
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .settings-section h3 {
+            margin-top: 0;
+            color: #5A7B95;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-info i {
+            color: #888;
+            font-size: 20px;
+        }
+
+        .setting-text h4 { margin: 0; font-size: 15px; color: #333; }
+        .setting-text p { margin: 2px 0 0; font-size: 12px; color: #888; }
+
+        /* Toggles and Buttons */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: #5A7B95; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .action-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover { background: #f5f5f5; color: #333; }
+        .danger-btn { color: #d32f2f; border-color: #ffcdd2; background: #ffebee; }
+        .danger-btn:hover { background: #ffcdd2; }
+
+    </style>
+</head>
+<body>
+
+    <%- include('partials/navbar') %>
+
+    <div class="container settings-container">
+        
+        <div class="settings-header">
+            <h2>Account Settings</h2>
+            <p style="color:#666;">Manage your preferences and security</p>
+        </div>
+
+        <div class="settings-section">
+            <h3>General Preferences</h3>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">dark_mode</i>
+                    <div class="setting-text">
+                        <h4>Dark Mode</h4>
+                        <p>Switch between light and dark themes</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="settingsThemeToggle" onclick="document.getElementById('themeBtn').click()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">notifications</i>
+                    <div class="setting-text">
+                        <h4>Email Notifications</h4>
+                        <p>Receive updates about your bookings</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+             <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">language</i>
+                    <div class="setting-text">
+                        <h4>Language</h4>
+                        <p>Current: English (US)</p>
+                    </div>
+                </div>
+                <button class="action-btn">Change</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Security & Privacy</h3>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">lock</i>
+                    <div class="setting-text">
+                        <h4>Change Password</h4>
+                        <p>Last changed 3 months ago</p>
+                    </div>
+                </div>
+                <button class="action-btn" onclick="alert('Mock: Password Reset Link Sent!')">Update</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">security</i>
+                    <div class="setting-text">
+                        <h4>Two-Factor Authentication</h4>
+                        <p>Add an extra layer of security</p>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+             <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">visibility</i>
+                    <div class="setting-text">
+                        <h4>Profile Visibility</h4>
+                        <p>Visible to consultants only</p>
+                    </div>
+                </div>
+                 <button class="action-btn">Manage</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Support</h3>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">help_outline</i>
+                    <div class="setting-text">
+                        <h4>Help Center</h4>
+                        <p>FAQ and support guides</p>
+                    </div>
+                </div>
+                <i class="material-icons-outlined" style="font-size:16px; color:#ccc;">arrow_forward_ios</i>
+            </div>
+
+             <div class="setting-item">
+                <div class="setting-info">
+                    <i class="material-icons-outlined">info</i>
+                    <div class="setting-text">
+                        <h4>About Website</h4>
+                        <p>Web Portal Version 1.0.2</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn" style="background-color: #d32f2f; width: auto; padding: 12px 40px; display:inline-block; text-decoration:none;">
+                Logout
+            </a>
+            <p style="margin-top:15px; font-size:12px; color:#999;">The Admission Architect © 2026</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Sync the switch state with the actual theme
+        if(document.body.classList.contains('dark-mode')) {
+            document.getElementById('settingsThemeToggle').checked = true;
+        }
+    </script>
+</body>
+</html>

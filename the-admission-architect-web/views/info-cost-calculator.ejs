@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cost of Living Calculator | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body { padding-top: 0 !important; background: #F9FAFB; }
+        .step-section { display: none; animation: fadeIn 0.4s; }
+        .step-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .results-box { text-align: center; background: #E3F2FD; padding: 40px 20px; border-radius: 16px; border: 2px solid #448AFF; margin-top: 20px; }
+        .total-cost { font-size: 48px; font-weight: bold; color: #1976D2; margin: 10px 0; }
+        .cost-breakdown { margin-top: 30px; text-align: left; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .breakdown-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; color: #555; }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item strong { color: #333; }
+    </style>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <header class="landing-hero" style="height: 40vh; background: linear-gradient(to right, rgba(13, 71, 161, 0.9), rgba(25, 118, 210, 0.7));">
+        <h1 style="font-size: 40px; margin-top: 50px;">Cost of Living Calculator</h1>
+        <p>Estimate your monthly expenses as an international student.</p>
+    </header>
+
+    <div class="container" style="max-width: 800px; padding: 40px 20px; margin-top: -60px; position: relative; z-index: 10;">
+        <div class="calc-container" style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            
+            <div class="stepper-wrapper" id="stepper" style="display: flex; justify-content: space-between; position: relative; margin-bottom: 40px;">
+                <div class="step-item active" id="indicator-1"><div class="step-circle">1</div><div class="step-label">Housing</div></div>
+                <div class="step-item" id="indicator-2"><div class="step-circle">2</div><div class="step-label">Food</div></div>
+                <div class="step-item" id="indicator-3"><div class="step-circle">3</div><div class="step-label">Daily</div></div>
+                <div class="step-item" id="indicator-4"><div class="step-circle">4</div><div class="step-label">Clothing</div></div>
+            </div>
+
+            <div class="step-section active" id="step-1">
+                <h2 style="color: #1976D2;">Housing 🏠</h2>
+                <div class="question-block"><div class="question-title">What country would you like to study in?</div><div class="pill-group" id="countryGroup"><button class="pill-btn active" onclick="selectPill('countryGroup', this)">United Kingdom</button></div></div>
+                <div class="question-block"><div class="question-title">What type of accommodation do you prefer?</div><div class="pill-group" id="accGroup"><button class="pill-btn active" data-cost="900" onclick="selectPill('accGroup', this)">Own apartment (£900/m)</button><button class="pill-btn" data-cost="550" onclick="selectPill('accGroup', this)">Share house (£550/m)</button></div></div>
+                <div class="question-block"><div class="question-title">Where would you like to live?</div><div class="pill-group" id="locGroup"><button class="pill-btn active" data-cost="200" onclick="selectPill('locGroup', this)">City Center (Premium)</button><button class="pill-btn" data-cost="0" onclick="selectPill('locGroup', this)">Suburbs (Standard)</button></div></div>
+                <div style="text-align: right; margin-top: 30px;"><button class="calc-btn-primary" style="width: auto; padding: 10px 30px;" onclick="nextStep(2)">Next: Food ➜</button></div>
+            </div>
+
+            <div class="step-section" id="step-2">
+                <h2 style="color: #4CAF50;">Food & Groceries 🍔</h2>
+                <div class="question-block"><div class="question-title">How often will you eat at restaurants?</div><div class="pill-group" id="eatOutGroup"><button class="pill-btn active" data-cost="100" onclick="selectPill('eatOutGroup', this)">Sometimes (1-2 times/week)</button><button class="pill-btn" data-cost="250" onclick="selectPill('eatOutGroup', this)">Often</button></div></div>
+                <div class="question-block"><div class="question-title">What are your grocery habits?</div><div class="pill-group" id="groceryGroup"><button class="pill-btn active" data-cost="150" onclick="selectPill('groceryGroup', this)">Standard</button><button class="pill-btn" data-cost="250" onclick="selectPill('groceryGroup', this)">Premium</button></div></div>
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;"><button class="pill-btn" onclick="prevStep(1)">⬅ Back</button><button class="calc-btn-primary" style="background: #4CAF50; width: auto; padding: 10px 30px;" onclick="nextStep(3)">Next ➜</button></div>
+            </div>
+
+            <div class="step-section" id="step-3">
+                <h2 style="color: #FF9800;">Daily Life 🚌</h2>
+                <div class="question-block"><div class="question-title">How will you commute?</div><div class="pill-group" id="transportGroup"><button class="pill-btn active" data-cost="60" onclick="selectPill('transportGroup', this)">Public Transport</button><button class="pill-btn" data-cost="150" onclick="selectPill('transportGroup', this)">Uber / Car</button></div></div>
+                <div class="question-block"><div class="question-title">Entertainment & Socializing</div><div class="pill-group" id="socialGroup"><button class="pill-btn active" data-cost="100" onclick="selectPill('socialGroup', this)">Medium</button><button class="pill-btn" data-cost="200" onclick="selectPill('socialGroup', this)">High</button></div></div>
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;"><button class="pill-btn" onclick="prevStep(2)">⬅ Back</button><button class="calc-btn-primary" style="background: #FF9800; width: auto; padding: 10px 30px;" onclick="nextStep(4)">Next ➜</button></div>
+            </div>
+
+            <div class="step-section" id="step-4">
+                <h2 style="color: #9C27B0;">Clothing & Shopping 👕</h2>
+                <div class="question-block"><div class="question-title">How often do you shop?</div><div class="pill-group" id="clothGroup"><button class="pill-btn active" data-cost="60" onclick="selectPill('clothGroup', this)">Monthly</button><button class="pill-btn" data-cost="150" onclick="selectPill('clothGroup', this)">Often</button></div></div>
+                <div class="question-block"><div class="question-title">Mobile Phone Plan</div><div class="pill-group" id="phoneGroup"><button class="pill-btn active" data-cost="20" onclick="selectPill('phoneGroup', this)">Standard SIM</button><button class="pill-btn" data-cost="50" onclick="selectPill('phoneGroup', this)">Premium Contract</button></div></div>
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;"><button class="pill-btn" onclick="prevStep(3)">⬅ Back</button><button class="calc-btn-primary" style="background: #9C27B0; width: auto; padding: 10px 30px;" onclick="calculateTotal()">Calculate £</button></div>
+            </div>
+
+            <div class="step-section" id="step-results">
+                <div class="results-box">
+                    <h2 style="margin:0; color:#333;">Estimated Monthly Cost</h2>
+                    <div class="total-cost" id="finalCostDisplay">£0</div>
+                    <div class="cost-breakdown">
+                        <div class="breakdown-item"><span>Housing & Utilities</span> <strong id="res-housing">£0</strong></div>
+                        <div class="breakdown-item"><span>Food & Groceries</span> <strong id="res-food">£0</strong></div>
+                        <div class="breakdown-item"><span>Transport & Daily Life</span> <strong id="res-daily">£0</strong></div>
+                        <div class="breakdown-item"><span>Clothing & Personal</span> <strong id="res-clothing">£0</strong></div>
+                    </div>
+                    <a href="/login" class="calc-btn-primary" style="margin-top: 30px;">Sign in to Book Financial Counselling</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        function selectPill(groupId, clickedBtn) {
+            const buttons = document.querySelectorAll(`#${groupId} .pill-btn`);
+            buttons.forEach(btn => btn.classList.remove('active'));
+            clickedBtn.classList.add('active');
+        }
+        function nextStep(stepNum) { document.querySelectorAll('.step-section').forEach(el => el.classList.remove('active')); document.getElementById('step-' + stepNum).classList.add('active'); document.getElementById('indicator-' + stepNum).classList.add('active'); }
+        function prevStep(stepNum) { document.querySelectorAll('.step-section').forEach(el => el.classList.remove('active')); document.getElementById('step-' + stepNum).classList.add('active'); document.getElementById('indicator-' + (stepNum + 1)).classList.remove('active'); }
+        function getGroupValue(groupId) { const activeBtn = document.querySelector(`#${groupId} .pill-btn.active`); return activeBtn ? parseInt(activeBtn.getAttribute('data-cost') || 0) : 0; }
+        
+        function calculateTotal() {
+            const housing = getGroupValue('accGroup') + getGroupValue('locGroup');
+            const food = getGroupValue('eatOutGroup') + getGroupValue('groceryGroup');
+            const daily = getGroupValue('transportGroup') + getGroupValue('socialGroup');
+            const clothing = getGroupValue('clothGroup') + getGroupValue('phoneGroup');
+            const total = housing + food + daily + clothing;
+
+            document.getElementById('res-housing').innerText = '£' + housing;
+            document.getElementById('res-food').innerText = '£' + food;
+            document.getElementById('res-daily').innerText = '£' + daily;
+            document.getElementById('res-clothing').innerText = '£' + clothing;
+            
+            let currentDisplay = 0;
+            const displayEl = document.getElementById('finalCostDisplay');
+            const interval = setInterval(() => {
+                currentDisplay += 25;
+                if(currentDisplay >= total) { currentDisplay = total; clearInterval(interval); }
+                displayEl.innerText = '£' + currentDisplay;
+            }, 10);
+
+            document.getElementById('stepper').style.display = 'none';
+            document.querySelectorAll('.step-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-results').classList.add('active');
+        }
+    </script>
+</body>
+</html>

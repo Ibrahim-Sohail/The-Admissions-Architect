@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Admission Architect</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="hero-section">
+            <h1 style="margin:0;">Hello <%= user %>, 👋</h1>
+            <p style="opacity:0.9;">Ready to start your study abroad journey?</p>
+        </div>
+
+        <div class="grid-menu">
+            <a href="/booking" class="feature-card" style="background-color:#448AFF;">
+                <i class="material-icons">school</i>
+                <span>Study Abroad</span>
+            </a>
+            <a href="/test-modules" class="feature-card" style="background-color:#9C27B0;">
+                <i class="material-icons">quiz</i>
+                <span>Test Modules</span>
+            </a>
+            <a href="/university" class="feature-card" style="background-color:#FF6E40;">
+                <i class="material-icons">search</i>
+                <span>Uni Finder</span>
+            </a>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Why Study in the UK? 🇬🇧</h2>
+                <p>Discover a world-class education system.</p>
+            </div>
+            
+            <div class="article-grid">
+                <div class="article-text">
+                    <p>Studying in the UK offers a path to a promising future, with world-ranked universities providing innovative teaching methods and an unforgettable student experience. Additionally, post-study work opportunities enhance the overall appeal.</p>
+                    <ul>
+                        <li><strong>Global Renown:</strong> UK education is recognized globally for its high caliber and multicultural environment.</li>
+                        <li><strong>Short Duration:</strong> Masters degrees are typically 1 year, saving you time and money.</li>
+                        <li><strong>Industry Links:</strong> The UK ranks among top 5 globally for industry-university collaboration.</li>
+                        <li><strong>Graduate Route:</strong> Stay in the UK for 2 years after graduating to find work.</li>
+                    </ul>
+                </div>
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="London Big Ben">
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Cost of Studying & Living 💷</h2>
+                <p>Estimated tuition fees for international students.</p>
+            </div>
+            
+            <p style="color:#666;">The cost depends on the institution and degree type. Below is an average estimate:</p>
+            
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>Study Program</th>
+                        <th>Avg. Annual Tuition (GBP)</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bachelor's Degree</strong></td>
+                        <td>£10,000 - £20,000</td>
+                        <td>3 Years</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Master's Degree</strong></td>
+                        <td>£10,000 - £20,000</td>
+                        <td>1 Year</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Doctoral Degree</strong></td>
+                        <td>£15,000 - £24,000</td>
+                        <td>3-4 Years</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="calc-widget">
+            <i class="material-icons calc-icon">calculate</i>
+            <h3>Cost of living calculator</h3>
+            <p>Estimate how much you will need to cover your expenses including cost of living comparison for various country and accommodation options.</p>
+            <a href="/cost-calculator" class="calc-btn-primary">Calculate now</a>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Job Opportunities in the UK 💼</h2>
+                <p>Work while you study and build your career.</p>
+            </div>
+            
+            <div class="article-grid">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Students Working">
+                </div>
+                <div class="article-text">
+                    <p>The UK offers excellent prospects for international students to gain practical experience and earn money while completing their degrees.</p>
+                    <ul>
+                        <li><strong>Part-Time Work:</strong> International students on a Tier 4 (General) visa can usually work up to 20 hours per week during term time and full-time during holidays.</li>
+                        <li><strong>Graduate Route Visa:</strong> Once you complete your degree, you can apply to stay in the UK for 2 years (or 3 years for PhD graduates) to work or look for work at any skill level.</li>
+                        <li><strong>In-Demand Sectors:</strong> Fields like Healthcare, Engineering, IT, Finance, and Business Analytics are highly sought after by UK employers.</li>
+                        <li><strong>University Support:</strong> Most UK universities have dedicated career centers to help you build your CV, prepare for interviews, and connect with local employers.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" style="padding-top: 0;">
+            <div class="mentorship-header">
+                <h2>The University Mentorship 🎓</h2>
+                <p>Exclusive Profile Building for Grades 9, 10, and 11.</p>
+            </div>
+            
+            <div style="padding: 0 10px;">
+                <p style="font-size: 16px; color: #444; line-height: 1.7; text-align: justify;">
+                    Gaining admission to top-tier institutions like <strong>Oxford, Cambridge, and Ivy League</strong> universities requires more than just good grades. Our University Mentorship program pairs students with elite counselors to structure a strategic, multi-year roadmap. We guide students through securing high-impact internships, enrolling in certified online courses, participating in competitive sports, and engaging in debate and extracurricular leadership.
+                </p>
+
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3 style="margin:0; color:#333;">1-Year Foundation</h3>
+                        <div class="pricing-price">$2,000</div>
+                        <p style="color:#888; font-size:13px; margin:0;">Profile Building Package</p>
+                        
+                        <ul class="pricing-features">
+                            <li><i class="material-icons">check_circle</i> Career Assessment Test</li>
+                            <li><i class="material-icons">check_circle</i> Academic Goal Setting</li>
+                            <li><i class="material-icons">check_circle</i> Extracurricular Structuring</li>
+                            <li><i class="material-icons">check_circle</i> 1 Internship Placement</li>
+                            <li><i class="material-icons">check_circle</i> Monthly Mentorship Calls</li>
+                        </ul>
+                        
+                        <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="calc-btn-primary" style="background:#333;">Enroll Now</a>
+                    </div>
+
+                    <div class="pricing-card premium">
+                        <div class="premium-badge">POPULAR</div>
+                        <h3 style="margin:0; color:#333;">2-Year Masterclass</h3>
+                        <div class="pricing-price">$4,000</div>
+                        <p style="color:#888; font-size:13px; margin:0;">Complete Admissions Roadmap</p>
+                        
+                        <ul class="pricing-features">
+                            <li><i class="material-icons">check_circle</i> Everything in 1-Year</li>
+                            <li><i class="material-icons">check_circle</i> Ivy/Oxbridge Application Strategy</li>
+                            <li><i class="material-icons">check_circle</i> 2+ Internship/Research Placements</li>
+                            <li><i class="material-icons">check_circle</i> Leadership & Debate Coaching</li>
+                            <li><i class="material-icons">check_circle</i> Bi-Weekly Mentorship Calls</li>
+                        </ul>
+                        
+                        <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="calc-btn-primary" style="background:#FFC107; color:#333;">Enroll Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" style="background: transparent; box-shadow: none; padding: 0;">
+            <div class="section-header">
+                <h2>The Extra Mile Services 🌟</h2>
+                <p>We support you until you are safely settled in your new home.</p>
+            </div>
+
+            <div class="extra-mile-grid">
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="em-card">
+                    <div class="em-icon"><i class="material-icons" style="font-size:30px;">king_bed</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Accommodation Support</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Book a session with our housing advisors to find safe, affordable student housing or private rentals.</p>
+                </a>
+
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="em-card">
+                    <div class="em-icon" style="color: #4CAF50; background: #E8F5E9;"><i class="material-icons" style="font-size:30px;">fact_check</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Visa Support</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Get expert guidance on Tier-4 student visa requirements, financial documents, and mock interviews.</p>
+                </a>
+
+                <a href="/airport-transfer" class="em-card">
+                    <div class="em-icon" style="color: #FF9800; background: #FFF3E0;"><i class="material-icons" style="font-size:30px;">flight_land</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Airport Transfers</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Arrange a secure pickup from any UK airport directly to your university accommodation.</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Admission Requirements 📄</h2>
+                <p>Checklist for Pakistani Students applying to UK.</p>
+            </div>
+
+            <div class="article-grid">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Documents">
+                </div>
+                <div class="article-text">
+                    <p>When applying to a university in the UK, you'll need to submit the following documents:</p>
+                    <ul>
+                        <li>Official Academic Certificates (Matric/FSc/O-A Levels/Bachelor's).</li>
+                        <li>Personal Statement (SOP) explaining your motivation.</li>
+                        <li>Two Letters of Recommendation (Academic/Professional).</li>
+                        <li>Updated Resume / CV.</li>
+                        <li>Valid Passport Copy.</li>
+                        <li>IELTS / PTE Scorecard (if applicable).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Top Partner Universities 🎓</h2>
+                <p>Fast-track your application to these institutions.</p>
+            </div>
+
+            <div class="uni-grid">
+                <div class="uni-card">
+                    <h4>University of Glasgow</h4>
+                    <p>Scotland, UK</p>
+                    <div class="uni-stats">
+                        <span>🏆 Rank: 84</span>
+                        <span>👥 Int. Students: 8,000+</span>
+                    </div>
+                </div>
+                <div class="uni-card">
+                    <h4>University of Birmingham</h4>
+                    <p>Birmingham, UK</p>
+                    <div class="uni-stats">
+                        <span>🏆 Rank: 98</span>
+                        <span>👥 Russell Group</span>
+                    </div>
+                </div>
+                <div class="uni-card">
+                    <h4>University of Sheffield</h4>
+                    <p>Sheffield, UK</p>
+                    <div class="uni-stats">
+                        <span>🏆 Rank: 108</span>
+                        <span>👥 Engineering Hub</span>
+                    </div>
+                </div>
+                <div class="uni-card">
+                    <h4>University of Manchester</h4>
+                    <p>Manchester, UK</p>
+                    <div class="uni-stats">
+                        <span>🏆 Rank: 32</span>
+                        <span>👥 Top Choice</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <%- include('partials/navbar') %>
+    <%- include('partials/footer') %>
+
+</body>
+</html>

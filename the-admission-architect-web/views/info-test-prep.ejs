@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Preparation | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style> body { padding-top: 0 !important; } </style>
+</head>
+<body>
+    
+    <%- include('partials/navbar') %>
+
+    <header class="landing-hero" style="height: 60vh; background: linear-gradient(to right, rgba(142, 68, 173, 0.9), rgba(156, 39, 176, 0.7)), url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+        <h1 style="font-size: 50px;">Master the IELTS & GRE</h1>
+        <p>Interactive mock tests, AI-graded essays, and personalized voice bots.</p>
+    </header>
+
+    <div class="container" style="max-width: 900px; padding: 60px 20px;">
+        <h2 style="color: #333;">How We Help You Score Higher</h2>
+        <p style="color: #666; font-size: 18px; line-height: 1.8; margin-bottom: 30px;">
+            Standardized tests can be the biggest hurdle in your study abroad journey. We have built state-of-the-art interactive modules to help you practice under real exam conditions.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 50px;">
+            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #4CAF50;">
+                <h3 style="margin-top:0; color:#4CAF50;"><i class="material-icons" style="vertical-align:middle;">headphones</i> IELTS Modules</h3>
+                <p style="color: #555;">Access full-length Reading and Listening mock tests with instant scoring. Practice your Speaking with our AI Voice Bot that gives you real-time feedback on pronunciation and fluency.</p>
+            </div>
+            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #00BFA5;">
+                <h3 style="margin-top:0; color:#00BFA5;"><i class="material-icons" style="vertical-align:middle;">menu_book</i> GRE AI Assistant</h3>
+                <p style="color: #555;">Struggling with verbal reasoning? Chat with our GRE AI consultant to learn advanced vocabulary, practice analytical writing, and get instant essay grading.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; background: #F3E5F5; padding: 40px; border-radius: 16px;">
+            <h2 style="margin-top: 0; color: #8E44AD;">Ready to test your skills?</h2>
+            <p style="color: #555; margin-bottom: 25px;">Sign in to your dashboard to unlock all mock tests and interactive bots.</p>
+            <a href="/login" class="calc-btn-primary" style="background: #8E44AD; display: inline-block; width: auto; padding: 15px 40px;">Sign in & Access Modules</a>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

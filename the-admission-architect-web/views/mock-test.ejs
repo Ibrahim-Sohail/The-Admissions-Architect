@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= testData.title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .test-container { max-width:800px; margin:0 auto; background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); padding:40px; }
+        .test-header { display:flex; align-items:center; gap:20px; border-bottom:2px solid #f0f0f0; padding-bottom:20px; margin-bottom:30px; }
+        .test-icon { width:60px; height:60px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:white; background-color:<%= testData.color %>; flex-shrink:0; }
+        .test-header h1 { margin:0; color:#333; font-size:24px; }
+        .passage-box { background:#f9f9f9; padding:20px; border-left:5px solid <%= testData.color %>; border-radius:8px; margin-bottom:30px; color:#444; line-height:1.7; }
+        .question-block { margin-bottom:25px; }
+        .question-text { font-weight:bold; margin-bottom:10px; font-size:16px; }
+        .options-list { list-style:none; padding:0; margin:0; }
+        .options-list li { margin-bottom:10px; }
+        .options-list label { display:flex; align-items:center; gap:10px; background:#fdfdfd; border:1.5px solid #ddd; padding:12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+        .options-list label:hover { background:#f0f8ff; border-color:<%= testData.color %>; }
+        .options-list input[type="radio"] { transform:scale(1.2); flex-shrink:0; }
+        .writing-area { width:100%; height:250px; padding:15px; border:2px solid #ddd; border-radius:12px; font-family:inherit; font-size:15px; resize:vertical; box-sizing:border-box; }
+        .writing-area:focus { outline:none; border-color:<%= testData.color %>; }
+        .submit-btn { background:<%= testData.color %>; color:white; border:none; padding:15px 30px; font-size:16px; font-weight:bold; border-radius:10px; cursor:pointer; width:100%; transition:opacity 0.3s; margin-top:20px; }
+        .submit-btn:hover { opacity:0.9; }
+        .submit-btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .results-box { display:none; margin-top:30px; padding:25px; text-align:center; background:#E8F5E9; border-radius:12px; border:2px solid #4CAF50; }
+        .results-box h2 { margin:0 0 10px; color:#2E7D32; }
+        .feedback-box { background:#fff; border-radius:10px; padding:15px; margin-top:15px; text-align:left; border:1px solid #ddd; line-height:1.6; }
+        .score-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px; }
+        .score-item { background:#f5f5f5; border-radius:8px; padding:10px; text-align:center; }
+        .score-item strong { display:block; font-size:22px; color:#333; }
+        .score-item span { font-size:12px; color:#777; }
+        .loading { text-align:center; padding:30px; color:#666; }
+        .spinner { border:3px solid #f3f3f3; border-top:3px solid <%= testData.color %>; border-radius:50%; width:40px; height:40px; animation:spin 0.8s linear infinite; margin:0 auto 15px; }
+        @keyframes spin { 100% { transform:rotate(360deg); } }
+        .correct-answer { background:#E8F5E9 !important; border-color:#4CAF50 !important; }
+        .wrong-answer { background:#FFEBEE !important; border-color:#F44336 !important; }
+
+        /* TTS / STT Controls */
+        .tts-controls { display:flex; align-items:center; gap:12px; background:#E3F2FD; padding:15px 20px; border-radius:10px; margin-bottom:20px; }
+        .tts-btn { background:#1976D2; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:8px; font-weight:bold; font-size:14px; transition:all 0.2s; }
+        .tts-btn:hover { background:#1565C0; }
+        .tts-btn.playing { background:#d32f2f; }
+        .tts-status { font-size:14px; color:#555; }
+
+        /* Mic Button */
+        .mic-section { text-align:center; padding:30px 20px; }
+        .mic-btn { width:90px; height:90px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; transition:all 0.3s; font-size:0; background:<%= testData.color %>; box-shadow:0 4px 15px rgba(0,0,0,0.2); }
+        .mic-btn i { font-size:40px; color:white; }
+        .mic-btn.recording { background:#d32f2f; animation:pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(211,47,47,0.4); } 50% { box-shadow:0 0 0 15px rgba(211,47,47,0); } }
+        .mic-status { font-size:16px; color:#555; font-weight:500; }
+        .transcript-box { background:#f9f9f9; border:2px solid #ddd; border-radius:10px; padding:15px; min-height:80px; margin:15px 0; font-size:15px; color:#333; line-height:1.6; text-align:left; }
+        .mic-fallback { font-size:13px; color:#999; margin-top:10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/test-modules" style="display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:#5A7B95; font-weight:bold; margin-bottom:20px;">
+            <i class="material-icons" style="font-size:18px;">arrow_back</i> Back to Hub
+        </a>
+
+        <div class="test-container">
+            <div class="test-header">
+                <div class="test-icon"><i class="material-icons" style="font-size:35px;"><%= testData.icon %></i></div>
+                <div>
+                    <h1><%= testData.title %></h1>
+                    <p style="margin:5px 0 0; color:#666;"><%= testData.instructions %></p>
+                </div>
+            </div>
+
+            <div id="loadingArea" class="loading">
+                <div class="spinner"></div>
+                <p>Generating your test with AI...</p>
+            </div>
+
+            <div id="testArea" style="display:none;"></div>
+
+            <div class="results-box" id="resultsBox">
+                <h2 id="resultTitle">✅ Test Complete!</h2>
+                <p id="resultScore" style="font-size:22px; font-weight:bold; color:#333;"></p>
+                <div class="feedback-box" id="resultFeedback"></div>
+                <button onclick="window.location.reload()" class="submit-btn" style="margin-top:15px; background:#5A7B95;">Try Another</button>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/navbar') %>
+
+    <script>
+        const testType = '<%= testData.type %>';
+        let currentQuestion = null;
+        let ttsUtterance = null;
+        let isPlaying = false;
+        let recognition = null;
+
+        // ─── TTS Helper ────────────────────────────────────────
+        function speakText(text, btn, statusEl) {
+            if (!window.speechSynthesis) {
+                statusEl.textContent = 'Text-to-speech not supported in this browser.';
+                return;
+            }
+            if (isPlaying) {
+                window.speechSynthesis.cancel();
+                isPlaying = false;
+                btn.classList.remove('playing');
+                btn.innerHTML = '<i class="material-icons">volume_up</i> Play Audio';
+                statusEl.textContent = 'Click Play to listen to the script.';
+                return;
+            }
+            ttsUtterance = new SpeechSynthesisUtterance(text);
+            ttsUtterance.rate = 0.85;
+            ttsUtterance.pitch = 1;
+            ttsUtterance.lang = 'en-GB';
+            ttsUtterance.onstart = () => {
+                isPlaying = true;
+                btn.classList.add('playing');
+                btn.innerHTML = '<i class="material-icons">stop</i> Stop';
+                statusEl.textContent = '▶️ Playing...';
+            };
+            ttsUtterance.onend = () => {
+                isPlaying = false;
+                btn.classList.remove('playing');
+                btn.innerHTML = '<i class="material-icons">volume_up</i> Play Again';
+                statusEl.textContent = '✅ Done. Answer the questions below.';
+            };
+            window.speechSynthesis.speak(ttsUtterance);
+        }
+
+        // ─── STT Helper ────────────────────────────────────────
+        function startSpeechRecognition(onResult, onError) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { onError('not_supported'); return; }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            let finalTranscript = '';
+            recognition.onresult = (event) => {
+                let interim = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript + ' ';
+                    else interim += event.results[i][0].transcript;
+                }
+                onResult(finalTranscript + interim, false);
+            };
+            recognition.onend = () => onResult(finalTranscript, true);
+            recognition.onerror = (e) => onError(e.error);
+            recognition.start();
+            return recognition;
+        }
+
+        // ─── Load Test ─────────────────────────────────────────
+        async function loadTest() {
+            try {
+                if (testType === 'reading') {
+                    const data = await fetch('/api/ielts/reading', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' }).then(r=>r.json());
+                    renderQuiz(data.passage, data.questions, 'Reading');
+
+                } else if (testType === 'listening') {
+                    const data = await fetch('/api/ielts/listening', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' }).then(r=>r.json());
+                    renderListening(data);
+
+                } else if (testType === 'writing') {
+                    renderWriting();
+
+                } else if (testType === 'speaking') {
+                    renderSpeaking();
+
+                } else if (testType === 'gre-verbal' || testType === 'gre-quant') {
+                    const topic = testType === 'gre-verbal' ? 'Verbal Reasoning' : 'Quantitative Reasoning';
+                    const data = await fetch('/api/gre/question', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({topic}) }).then(r=>r.json());
+                    currentQuestion = {...data, topic};
+                    renderGREQuestion(data);
+                }
+
+                document.getElementById('loadingArea').style.display = 'none';
+                document.getElementById('testArea').style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('loadingArea').innerHTML = `<p style="color:red;">Error: ${err.message}. <button onclick="loadTest()" class="submit-btn" style="width:auto;margin-top:10px;">Retry</button></p>`;
+            }
+        }
+
+        // ─── LISTENING with TTS ────────────────────────────────
+        function renderListening(data) {
+            const testArea = document.getElementById('testArea');
+            let html = `
+                <div class="tts-controls">
+                    <button class="tts-btn" id="playBtn" onclick="speakText(ttsScript, document.getElementById('playBtn'), document.getElementById('ttsStatus'))">
+                        <i class="material-icons">volume_up</i> Play Audio
+                    </button>
+                    <span class="tts-status" id="ttsStatus">Click Play to listen to the conversation.</span>
+                </div>
+                <details style="margin-bottom:20px;">
+                    <summary style="cursor:pointer; color:#5A7B95; font-weight:bold; font-size:14px;">📄 View Script (read after listening)</summary>
+                    <div class="passage-box" style="margin-top:10px;">${data.script.replace(/\n/g,'<br>')}</div>
+                </details>`;
+
+            data.questions.forEach((q, i) => {
+                html += `<div class="question-block">
+                    <p class="question-text">Q${i+1}. ${q.q}</p>
+                    <ul class="options-list">`;
+                q.options.forEach((opt, j) => {
+                    const letter = String.fromCharCode(65+j);
+                    html += `<li><label id="label_${i}_${j}"><input type="radio" name="q${i}" value="${letter}"> ${opt}</label></li>`;
+                });
+                html += `</ul></div>`;
+            });
+            html += `<button class="submit-btn" onclick="submitQuiz(${JSON.stringify(data.questions).replace(/"/g,'&quot;')}, 'Listening')">Submit Answers</button>`;
+            testArea.innerHTML = html;
+
+            // Store script for TTS
+            window.ttsScript = data.script;
+        }
+
+        // ─── READING / QUIZ ─────────────────────────────────────
+        function renderQuiz(passage, questions, module) {
+            let html = passage ? `<div class="passage-box">${passage}</div>` : '';
+            questions.forEach((q, i) => {
+                html += `<div class="question-block">
+                    <p class="question-text">Q${i+1}. ${q.q}</p>
+                    <ul class="options-list">`;
+                q.options.forEach((opt, j) => {
+                    const letter = String.fromCharCode(65+j);
+                    html += `<li><label id="label_${i}_${j}"><input type="radio" name="q${i}" value="${letter}"> ${opt}</label></li>`;
+                });
+                html += `</ul></div>`;
+            });
+            html += `<button class="submit-btn" onclick="submitQuiz(${JSON.stringify(questions).replace(/"/g,'&quot;')}, '${module}')">Submit Answers</button>`;
+            document.getElementById('testArea').innerHTML = html;
+        }
+
+        function submitQuiz(questions, module) {
+            let score = 0;
+            questions.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const correct = q.answer.toUpperCase().replace(')','').trim()[0];
+                q.options.forEach((opt, j) => {
+                    const letter = String.fromCharCode(65+j);
+                    const label = document.getElementById(`label_${i}_${j}`);
+                    if (letter === correct) label.classList.add('correct-answer');
+                    else if (selected && selected.value === letter) label.classList.add('wrong-answer');
+                });
+                if (selected && selected.value === correct) score++;
+            });
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+            document.querySelector('.submit-btn').style.display = 'none';
+            fetch('/api/ielts/save-score', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ module, score, feedback:`Scored ${score}/${questions.length}` }) });
+            showResults(`${score} / ${questions.length}`, `You answered ${score} out of ${questions.length} correctly.`, null);
+        }
+
+        // ─── WRITING ───────────────────────────────────────────
+        function renderWriting() {
+            const passage = `<%= typeof testData.passage !== 'undefined' ? testData.passage : '' %>`;
+            document.getElementById('testArea').innerHTML = `
+                ${passage ? `<div class="passage-box">${passage}</div>` : ''}
+                <div style="text-align:right; color:#999; font-size:13px; margin-bottom:5px;" id="wordCount">0 words</div>
+                <textarea class="writing-area" id="essayInput" placeholder="Write your essay here..." oninput="updateWordCount()"></textarea>
+                <button class="submit-btn" onclick="submitWriting()">Submit for AI Grading</button>`;
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('essayInput').value.trim();
+            document.getElementById('wordCount').textContent = (text ? text.split(/\s+/).length : 0) + ' words';
+        }
+
+        async function submitWriting() {
+            const essay = document.getElementById('essayInput').value.trim();
+            if (essay.split(/\s+/).length < 50) { alert('Please write at least 50 words.'); return; }
+            const btn = document.querySelector('.submit-btn');
+            btn.disabled = true; btn.textContent = 'Grading with AI...';
+            try {
+                const data = await fetch('/api/ielts/grade-writing', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({essay_text: essay}) }).then(r=>r.json());
+                let details = `<p>${data.feedback}</p>`;
+                if (data.task_achievement) details += `<div class="score-grid">
+                    <div class="score-item"><strong>${data.task_achievement}</strong><span>Task Achievement</span></div>
+                    <div class="score-item"><strong>${data.coherence}</strong><span>Coherence</span></div>
+                    <div class="score-item"><strong>${data.lexical_resource}</strong><span>Lexical Resource</span></div>
+                    <div class="score-item"><strong>${data.grammar}</strong><span>Grammar</span></div></div>`;
+                showResults(`Band ${data.band} / 9.0`, '', details);
+            } catch(err) {
+                btn.disabled = false; btn.textContent = 'Submit for AI Grading';
+                alert('Error: ' + err.message);
+            }
+        }
+
+        // ─── SPEAKING with STT ────────────────────────────────
+        function renderSpeaking() {
+            document.getElementById('testArea').innerHTML = `
+                <div class="passage-box"><strong>🎤 Topic:</strong> Describe a memorable journey you have taken.</div>
+                <p style="color:#666; text-align:center;">Click the microphone and speak your answer clearly.</p>
+                <div class="mic-section">
+                    <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+                        <i class="material-icons">mic</i>
+                    </button>
+                    <p class="mic-status" id="micStatus">Tap the mic to start recording</p>
+                </div>
+                <div class="transcript-box" id="transcriptBox" style="display:none;"></div>
+                <button class="submit-btn" id="submitSpeakBtn" onclick="submitSpeaking()" style="display:none;">Submit for AI Grading</button>
+                <p class="mic-fallback">No microphone? <a href="#" onclick="showTextFallback()" style="color:#9C27B0;">Type your response instead</a></p>
+                <textarea class="writing-area" id="textFallback" placeholder="Type your response here..." style="display:none; margin-top:10px;"></textarea>
+                <button class="submit-btn" id="submitTextBtn" onclick="submitSpeakingText()" style="display:none; background:#9C27B0;">Submit Typed Response</button>`;
+        }
+
+        let micActive = false;
+        let fullTranscript = '';
+
+        function toggleMic() {
+            const btn = document.getElementById('micBtn');
+            const status = document.getElementById('micStatus');
+            const transcriptBox = document.getElementById('transcriptBox');
+            const submitBtn = document.getElementById('submitSpeakBtn');
+
+            if (!micActive) {
+                fullTranscript = '';
+                micActive = true;
+                btn.classList.add('recording');
+                status.textContent = '🔴 Recording... Speak now';
+                transcriptBox.style.display = 'block';
+                transcriptBox.textContent = 'Listening...';
+                submitBtn.style.display = 'none';
+
+                startSpeechRecognition(
+                    (text, isFinal) => {
+                        transcriptBox.textContent = text;
+                        if (isFinal) { fullTranscript = text; }
+                    },
+                    (error) => {
+                        if (error === 'not_supported') {
+                            status.textContent = 'Microphone not supported. Use the text option below.';
+                            showTextFallback();
+                        } else {
+                            status.textContent = `Error: ${error}. Try again or use text input.`;
+                        }
+                        micActive = false;
+                        btn.classList.remove('recording');
+                    }
+                );
+            } else {
+                micActive = false;
+                btn.classList.remove('recording');
+                if (recognition) recognition.stop();
+                status.textContent = '✅ Recording stopped.';
+                if (fullTranscript.trim().length > 10) {
+                    submitBtn.style.display = 'block';
+                } else {
+                    status.textContent = 'Not enough speech detected. Try again.';
+                }
+            }
+        }
+
+        async function submitSpeaking() {
+            const text = fullTranscript.trim();
+            if (!text) { alert('No speech detected. Please try again.'); return; }
+            const btn = document.getElementById('submitSpeakBtn');
+            btn.disabled = true; btn.textContent = 'Grading...';
+            try {
+                const data = await fetch('/api/ielts/grade-speaking', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({response_text: text}) }).then(r=>r.json());
+                showResults(`Band ${data.band} / 9.0`, data.feedback, null);
+            } catch(err) { btn.disabled = false; btn.textContent = 'Submit for AI Grading'; alert('Error: ' + err.message); }
+        }
+
+        async function submitSpeakingText() {
+            const text = document.getElementById('textFallback').value.trim();
+            if (!text) { alert('Please type your response.'); return; }
+            const btn = document.getElementById('submitTextBtn');
+            btn.disabled = true; btn.textContent = 'Grading...';
+            try {
+                const data = await fetch('/api/ielts/grade-speaking', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({response_text: text}) }).then(r=>r.json());
+                showResults(`Band ${data.band} / 9.0`, data.feedback, null);
+            } catch(err) { btn.disabled = false; btn.textContent = 'Submit'; alert('Error: ' + err.message); }
+        }
+
+        function showTextFallback() {
+            document.getElementById('textFallback').style.display = 'block';
+            document.getElementById('submitTextBtn').style.display = 'block';
+        }
+
+        // ─── GRE ───────────────────────────────────────────────
+        function renderGREQuestion(data) {
+            let html = `<div class="question-block"><p class="question-text">${data.question_text}</p><ul class="options-list">`;
+            data.options.forEach((opt, j) => {
+                const letter = String.fromCharCode(65+j);
+                html += `<li><label id="gre_label_${j}"><input type="radio" name="gre_q" value="${letter}"> ${opt}</label></li>`;
+            });
+            html += `</ul></div><button class="submit-btn" onclick="submitGRE()">Submit Answer</button>`;
+            document.getElementById('testArea').innerHTML = html;
+        }
+
+        async function submitGRE() {
+            const selected = document.querySelector('input[name="gre_q"]:checked');
+            if (!selected) { alert('Please select an answer.'); return; }
+            const correct = currentQuestion.correct_answer.toUpperCase().trim()[0];
+            currentQuestion.options.forEach((opt, j) => {
+                const letter = String.fromCharCode(65+j);
+                const label = document.getElementById(`gre_label_${j}`);
+                if (letter === correct) label.classList.add('correct-answer');
+                else if (selected.value === letter) label.classList.add('wrong-answer');
+            });
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+            document.querySelector('.submit-btn').style.display = 'none';
+            const isCorrect = selected.value === correct;
+            await fetch('/api/gre/submit-answer', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic: currentQuestion.topic, question_text: currentQuestion.question_text, user_answer: selected.value, correct_answer: correct, explanation: currentQuestion.explanation }) });
+            showResults(isCorrect ? '✅ Correct!' : '❌ Incorrect', `<strong>Explanation:</strong> ${currentQuestion.explanation}`, null);
+        }
+
+        // ─── Results ───────────────────────────────────────────
+        function showResults(scoreText, mainText, detailsHtml) {
+            document.getElementById('resultScore').textContent = scoreText;
+            let html = mainText ? `<p>${mainText}</p>` : '';
+            if (detailsHtml) html += detailsHtml;
+            document.getElementById('resultFeedback').innerHTML = html;
+            const box = document.getElementById('resultsBox');
+            box.style.display = 'block';
+            box.scrollIntoView({ behavior:'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTest);
+    </script>
+</body>
+</html>

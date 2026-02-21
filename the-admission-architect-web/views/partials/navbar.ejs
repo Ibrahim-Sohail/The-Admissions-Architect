@@ -1,0 +1,77 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+
+<nav class="top-nav">
+    <a href="/home" class="nav-brand">
+        <img src="/images/logo.png" alt="Admission Architect" onerror="this.src='https://via.placeholder.com/50'">
+        <span>Admission Arch.</span>
+    </a>
+
+    <ul class="nav-links">
+        <li>
+            <a href="/home" class="nav-item <%= page === 'home' ? 'active' : '' %>">
+                <i class="<%= page === 'home' ? 'material-icons' : 'material-icons-outlined' %>">dashboard</i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="/booking" class="nav-item <%= page === 'booking' ? 'active' : '' %>">
+                <i class="<%= page === 'booking' ? 'material-icons' : 'material-icons-outlined' %>">calendar_today</i>
+                <span>Book Session</span>
+            </a>
+        </li>
+        <li>
+            <a href="/university" class="nav-item <%= page === 'university' ? 'active' : '' %>">
+                <i class="<%= page === 'university' ? 'material-icons' : 'material-icons-outlined' %>">school</i>
+                <span>Uni Finder</span>
+            </a>
+        </li>
+       <li>
+            <a href="/test-modules" class="nav-item <%= page === 'test-modules' ? 'active' : '' %>">
+                <i class="<%= page === 'test-modules' ? 'material-icons' : 'material-icons-outlined' %>">quiz</i>
+                <span>Test Modules</span>
+            </a>
+        </li>
+        <li>
+            <a href="/chat" class="nav-item <%= page === 'chat' ? 'active' : '' %>">
+                <i class="<%= page === 'chat' ? 'material-icons' : 'material-icons-outlined' %>">chat</i>
+                <span>GRE AI</span>
+            </a>
+        </li>
+    </ul>
+
+    <div style="display:flex; gap:15px; align-items:center;">
+        
+        <button onclick="toggleTheme()" class="theme-toggle" id="themeBtn" title="Toggle Dark Mode">
+            <i class="material-icons-outlined">dark_mode</i>
+        </button>
+
+        <a href="/settings" style="color:#666;" title="Settings"><i class="material-icons-outlined">settings</i></a>
+        
+        <a href="/profile" class="nav-profile" title="My Profile">
+            <i class="material-icons">person</i>
+        </a>
+    </div>
+</nav>
+
+<script>
+    // Check for saved preference on load
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeBtn').innerHTML = '<i class="material-icons-outlined">light_mode</i>';
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('themeBtn');
+        
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            btn.innerHTML = '<i class="material-icons-outlined">light_mode</i>';
+        } else {
+            localStorage.setItem('theme', 'light');
+            btn.innerHTML = '<i class="material-icons-outlined">dark_mode</i>';
+        }
+    }
+</script>

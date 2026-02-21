@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Finder</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .finder-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px; }
+        .form-select, .form-input { padding: 12px; border: 1px solid #ccc; border-radius: 8px; background-color: white; font-size: 14px; color: #333; outline: none; cursor: pointer; transition: border-color 0.3s; }
+        .form-select:focus, .form-input:focus { border-color: #5A7B95; }
+        .search-btn { background: linear-gradient(135deg, #1976D2, #5A7B95); color: white; font-size: 16px; font-weight: bold; padding: 16px; border-radius: 12px; border: none; cursor: pointer; width: 100%; margin-top: 20px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(25,118,210,0.3); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .search-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(25,118,210,0.4); }
+        .search-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        #toast { visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; font-size: 15px; opacity: 0; transition: opacity 0.5s, bottom 0.5s; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        .uni-result-card { display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px; border-left: 4px solid #5A7B95; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .profile-section { background: #f0f7ff; border-radius: 12px; padding: 20px; margin-bottom: 25px; border: 1px solid #d0e8ff; }
+        .profile-section h4 { margin: 0 0 15px 0; color: #1976D2; }
+        @media (max-width: 600px) { .finder-form { grid-template-columns: 1fr; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #5A7B95; margin-bottom: 5px;">Find Your University</h2>
+        <p style="color: #666; margin-bottom: 30px;">Tell us about yourself and we'll recommend the best universities for you using AI.</p>
+
+        <div class="card">
+            <!-- Profile inputs for recommendation -->
+            <div class="profile-section">
+                <h4><i class="material-icons" style="vertical-align:middle; font-size:18px;">person</i> Your Profile</h4>
+                <div class="finder-form">
+                    <div class="form-group">
+                        <label>Your CGPA</label>
+                        <input type="number" id="cgpa" class="form-input" placeholder="e.g. 3.5" step="0.1" min="0" max="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Intended Major</label>
+                        <select id="major" class="form-select">
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Business Administration">Business Administration</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Law">Law</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Budget Min ($)</label>
+                        <input type="number" id="budget_min" class="form-input" placeholder="e.g. 10000" value="10000">
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Budget Max ($)</label>
+                        <input type="number" id="budget_max" class="form-input" placeholder="e.g. 30000" value="30000">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Preferred Country</label>
+                        <select id="country" class="form-select">
+                            <option value="USA">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Any">Any</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="getRecommendations()" class="search-btn" id="searchBtn">
+                <i class="material-icons">auto_awesome</i> Get AI Recommendations
+            </button>
+        </div>
+
+        <div id="results" style="margin-top: 30px;"></div>
+    </div>
+
+    <div id="toast"></div>
+    <%- include('partials/navbar') %>
+
+    <script>
+        async function getRecommendations() {
+            const btn = document.getElementById('searchBtn');
+            const resultsDiv = document.getElementById('results');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="material-icons" style="animation: spin 1s linear infinite;">sync</i> Finding best matches...';
+            resultsDiv.innerHTML = '';
+
+            try {
+                const body = {
+                    cgpa: document.getElementById('cgpa').value || '3.0',
+                    major_interest: document.getElementById('major').value,
+                    budget_min: document.getElementById('budget_min').value,
+                    budget_max: document.getElementById('budget_max').value,
+                    preferred_country: document.getElementById('country').value
+                };
+
+                const res = await fetch('/api/universities/recommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `<div class="card" style="color:#d32f2f; text-align:center;"><i class="material-icons">error</i><p>${data.error}</p></div>`;
+                } else if (data.recommendations && data.recommendations.length > 0) {
+                    let html = `<h3 style="color:#5A7B95; margin-bottom:15px;">🎓 Recommended Universities</h3>`;
+                    data.recommendations.forEach((uni, i) => {
+                        html += `
+                        <div class="uni-result-card">
+                            <div>
+                                <h4 style="margin:0; color:#5A7B95;">${i+1}. ${uni.name}</h4>
+                                <p style="margin:5px 0; color:#666; font-size:14px;">
+                                    📍 ${uni.location || 'N/A'} &nbsp;•&nbsp; 
+                                    💰 Avg. Tuition: $${uni.tuition ? Number(uni.tuition).toLocaleString() : 'N/A'}/yr
+                                </p>
+                                <small style="color:orange; font-weight:bold;">🏆 Global Rank: #${uni.ranking || 'N/A'}</small>
+                            </div>
+                            <button onclick="showToast('${uni.name} added to favorites!')" style="background:none; border:none; cursor:pointer; font-size:28px;">❤️</button>
+                        </div>`;
+                    });
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = `<p style='text-align:center; color:#666;'>No universities found. Try adjusting your budget.</p>`;
+                }
+            } catch (err) {
+                resultsDiv.innerHTML = `<div class="card" style="color:#d32f2f; text-align:center;"><p>Error: ${err.message}</p></div>`;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="material-icons">auto_awesome</i> Get AI Recommendations';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+    </script>
+</body>
+</html>

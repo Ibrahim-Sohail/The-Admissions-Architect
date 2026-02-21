@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Session</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* --- HORIZONTAL SCROLL CONTAINER --- */
+        .scrolling-wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 25px;
+            padding: 20px 5px 40px 5px;
+            margin-top: 20px;
+            scrollbar-width: thin;
+        }
+
+        .scrolling-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .scrolling-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .scrolling-wrapper::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        /* --- THE EXPERT CARD --- */
+        .expert-card {
+            flex: 0 0 auto;
+            width: 380px;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .expert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(90, 123, 149, 0.2);
+        }
+
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #5A7B95;
+            margin-right: 15px;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .profile-info span {
+            color: #5A7B95;
+            font-size: 13px;
+            font-weight: bold;
+            background: #E3F2FD;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        /* Description Area */
+        .bio-text {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1; 
+            text-align: justify;
+        }
+
+        /* Book Button */
+        .book-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #5A7B95;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            transition: background 0.2s;
+            margin-top: auto;
+        }
+
+        .book-btn:hover {
+            background-color: #476278;
+        }
+
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #eee;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: #5A7B95; margin-bottom: 5px;">Meet Our Experts</h2>
+        <p style="color: #666;">Scroll right to find the perfect consultant for your needs.</p>
+        
+        <div class="scrolling-wrapper">
+            
+            <div class="expert-card">
+                <div class="profile-header">
+                    <img src="/images/consultant.jpeg" alt="Profile" class="profile-img" onerror="this.src='https://via.placeholder.com/80?text=IMG'">
+                    <div class="profile-info">
+                        <h3>Haider Abbas</h3>
+                        <span>Senior Consultant</span>
+                    </div>
+                </div>
+                <div class="bio-text">
+                    <p>With over 15 years of experience in international education and student recruitment across Saudi Arabia and the UAE, Haider has paved the path for thousands of students to their dream institutions.</p>
+                    <br>
+                    <p>Throughout his career, he has worked closely with students, families, schools, and global university partners to create clear, strategic pathways toward higher education.</p>
+                    <br>
+                    <p>He believes that education is not just a transaction but a turning point. His approach combines strategic thinking with personalized guidance.</p>
+                </div>
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="book-btn">
+                    Book Consultation ➜
+                </a>
+            </div>
+
+            <div class="expert-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder"><i class="material-icons">public</i></div>
+                    <div class="profile-info">
+                        <h3>Sarah Jenkins</h3>
+                        <span>Visa Specialist</span>
+                    </div>
+                </div>
+                <div class="bio-text">
+                    <p>Navigating visa regulations can be the most daunting part of studying abroad. Sarah brings 8 years of specialized experience in UK (Tier 4) and US (F-1) visa processing.</p>
+                    <br>
+                    <p>She maintains a 98% success rate by meticulously reviewing financial documents and preparing students for embassy interviews with mock sessions.</p>
+                </div>
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="book-btn">Book Visa Help ➜</a>
+            </div>
+
+            <div class="expert-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder"><i class="material-icons">home</i></div>
+                    <div class="profile-info">
+                        <h3>Michael Ross</h3>
+                        <span>Accommodation Advisor</span>
+                    </div>
+                </div>
+                <div class="bio-text">
+                    <p>Finding a home away from home is crucial for student success. Michael helps you secure safe, affordable, and convenient housing before you even land.</p>
+                    <br>
+                    <p>From on-campus dorms to private rentals, he negotiates contracts and ensures you understand all tenancy agreements to avoid hidden costs.</p>
+                </div>
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="book-btn">Find Housing ➜</a>
+            </div>
+
+            <div class="expert-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder"><i class="material-icons">translate</i></div>
+                    <div class="profile-info">
+                        <h3>Dr. Emily Chen</h3>
+                        <span>IELTS/TOEFL Coach</span>
+                    </div>
+                </div>
+                <div class="bio-text">
+                    <p>Language barriers shouldn't stop your dreams. Dr. Chen is a certified linguist who specializes in boosting IELTS and TOEFL scores in record time.</p>
+                    <br>
+                    <p>Her sessions focus on the specific criteria examiners look for, turning your 6.0 into a 7.5 through targeted practice and feedback.</p>
+                </div>
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="book-btn">Start Prep ➜</a>
+            </div>
+
+            <div class="expert-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder"><i class="material-icons">work</i></div>
+                    <div class="profile-info">
+                        <h3>James Carter</h3>
+                        <span>Career Coach</span>
+                    </div>
+                </div>
+                <div class="bio-text">
+                    <p>Thinking beyond the degree? James helps align your university choice with long-term career goals in the global job market.</p>
+                    <br>
+                    <p>He assists with internships, CV building, and networking strategies to ensure you graduate with more than just a diploma.</p>
+                </div>
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="book-btn">Plan Career ➜</a>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/navbar') %>
+
+</body>
+</html>

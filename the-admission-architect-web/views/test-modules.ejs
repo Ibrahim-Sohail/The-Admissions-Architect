@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Modules</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .modules-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .exam-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .exam-card.gre-card { border-color: #00BFA5; }
+        .exam-card.ielts-card { border-color: #9C27B0; }
+
+        .exam-header { display: flex; align-items: center; gap: 20px; }
+        .exam-icon {
+            width: 70px; height: 70px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center; color: white;
+        }
+        .gre-icon { background: linear-gradient(135deg, #00BFA5, #00897B); }
+        .ielts-icon { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+        .exam-header h2 { margin: 0; color: #333; font-size: 24px; }
+        .exam-header p { margin: 5px 0 0; color: #777; font-size: 14px; }
+
+        /* Expandable Details */
+        .exam-details {
+            max-height: 0; opacity: 0; overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .exam-details.expanded {
+            max-height: 2000px; opacity: 1; margin-top: 25px; padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .module-buttons {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;
+        }
+        .mod-btn {
+            display: flex; align-items: center; gap: 10px; padding: 15px;
+            border-radius: 12px; text-decoration: none; color: white; font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .mod-btn:hover { transform: scale(1.03); }
+
+        .mod-listen { background: #4CAF50; }
+        .mod-read { background: #FF9800; }
+        .mod-write { background: #F44336; }
+        .mod-speak { background: #9C27B0; }
+        .mod-gre-verbal { background: #00BFA5; }
+        .mod-gre-quant { background: #0288D1; }
+
+        /* --- TUTOR SECTION WIDGET --- */
+        .tutor-section {
+            margin-top: 30px; background: #f9f9f9; padding: 20px; border-radius: 15px;
+        }
+        .tutor-section h4 { margin: 0 0 15px 0; color: #333; display: flex; align-items: center; gap: 8px;}
+        .tutor-card {
+            display: flex; align-items: center; justify-content: space-between;
+            background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #FFC107;
+        }
+        .tutor-info { display: flex; align-items: center; gap: 15px; }
+        .tutor-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .tutor-text h5 { margin: 0; font-size: 16px; color: #333; }
+        .tutor-text p { margin: 3px 0; font-size: 12px; color: #666; }
+        .tutor-rate { font-weight: bold; color: #2E7D32; font-size: 14px; }
+        
+        .hire-btn {
+            background: #333; color: white; padding: 8px 15px; border-radius: 8px;
+            text-decoration: none; font-size: 13px; font-weight: bold;
+        }
+        .hire-btn:hover { background: #000; }
+
+        @media (max-width: 768px) { .modules-container { grid-template-columns: 1fr; } .tutor-card { flex-direction: column; gap: 15px; align-items: flex-start;} }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: #5A7B95; margin-bottom: 5px;">Test Preparation Modules</h2>
+        <p style="color: #666;">Access study materials, take mock tests, or hire an expert tutor.</p>
+
+        <div class="modules-container">
+            
+            <div class="exam-card ielts-card" onclick="toggleSection('ielts')">
+                <div class="exam-header">
+                    <div class="exam-icon ielts-icon"><i class="material-icons" style="font-size: 40px;">language</i></div>
+                    <div>
+                        <h2>IELTS Hub</h2>
+                        <p>Click to access Mock Tests & Tutors</p>
+                    </div>
+                </div>
+
+                <div class="exam-details" id="ielts">
+                    <p style="color: #555; font-size: 14px;">Practice with our interactive modules. Get instant scores for Reading and Listening, and AI grading for Speaking and Writing.</p>
+
+                    <div class="module-buttons">
+                        <a href="/module/listening" class="mod-btn mod-listen"><i class="material-icons">headphones</i> Listening Mock</a>
+                        <a href="/module/reading" class="mod-btn mod-read"><i class="material-icons">menu_book</i> Reading Mock</a>
+                        <a href="/module/writing" class="mod-btn mod-write"><i class="material-icons">edit_document</i> Writing Mock</a>
+                        <a href="/voice" class="mod-btn mod-speak"><i class="material-icons">mic</i> Speaking AI Bot</a>
+                    </div>
+
+                    <div class="tutor-section">
+                        <h4><i class="material-icons" style="color:#FFC107;">workspace_premium</i> Hire a Personal Tutor</h4>
+                        <div class="tutor-card">
+                            <div class="tutor-info">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" class="tutor-img">
+                                <div class="tutor-text">
+                                    <h5>Dr. Emily Chen</h5>
+                                    <p>Ex-IELTS Examiner • 10+ Years Exp.</p>
+                                    <span class="tutor-rate">£40 / hour</span>
+                                </div>
+                            </div>
+                            <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="hire-btn">Book Tutor</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exam-card gre-card" onclick="toggleSection('gre')">
+                <div class="exam-header">
+                    <div class="exam-icon gre-icon"><i class="material-icons" style="font-size: 40px;">school</i></div>
+                    <div>
+                        <h2>GRE Hub</h2>
+                        <p>Click to access Prep & Tutors</p>
+                    </div>
+                </div>
+
+                <div class="exam-details" id="gre">
+                    <p style="color: #555; font-size: 14px;">The GRE assesses your verbal reasoning, quantitative reasoning, and analytical writing skills. Use our AI tools or hire a tutor to boost your score.</p>
+
+                    <div class="module-buttons">
+                        <a href="/chat" class="mod-btn mod-gre-verbal"><i class="material-icons">forum</i> Verbal AI Practice</a>
+                        <a href="/chat" class="mod-btn mod-gre-quant"><i class="material-icons">calculate</i> Quant AI Practice</a>
+                    </div>
+
+                    <div class="tutor-section">
+                        <h4><i class="material-icons" style="color:#FFC107;">workspace_premium</i> Hire a Personal Tutor</h4>
+                        <div class="tutor-card" style="border-left-color: #00BFA5;">
+                            <div class="tutor-info">
+                                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" class="tutor-img">
+                                <div class="tutor-text">
+                                    <h5>Alex Mercer</h5>
+                                    <p>GRE Perfect Scorer • 5+ Years Exp.</p>
+                                    <span class="tutor-rate">£50 / hour</span>
+                                </div>
+                            </div>
+                            <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="hire-btn">Book Tutor</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/navbar') %>
+
+    <script>
+        function toggleSection(id) {
+            // Stop propagation so clicking inner buttons doesn't trigger the card toggle
+            if(event.target.tagName === 'A' || event.target.closest('a')) return;
+            
+            const content = document.getElementById(id);
+            content.classList.toggle('expanded');
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => document.getElementById('ielts').classList.add('expanded'), 300);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# AI & API
+google-generativeai
+
+# Database
+sqlalchemy
+psycopg2-binary  # For PostgreSQL
+# OR use 'sqlite' (built-in) if you switch back
+
+# Data & ML
+pandas
+numpy
+scikit-learn
+
+# Audio Processing
+gTTS
+#pygame
+SpeechRecognition
+#pyaudio  # Required for microphone input
+python-dotenv

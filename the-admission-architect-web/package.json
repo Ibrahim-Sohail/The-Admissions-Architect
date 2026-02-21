@@ -1,0 +1,17 @@
+{
+  "name": "the-admission-architect-web",
+  "version": "1.0.0",
+  "description": "Admission Architect Frontend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^17.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.18.2",
+    "nodemailer": "^8.0.1"
+  }
+}
