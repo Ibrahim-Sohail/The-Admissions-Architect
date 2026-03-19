@@ -1,0 +1,1 @@
+py -3.14 -m uvicorn api:app --reload --port 8000

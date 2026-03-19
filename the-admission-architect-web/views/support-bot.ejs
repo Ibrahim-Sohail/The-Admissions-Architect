@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body { background-color: #F9FAFB; height: 100vh; display: flex; flex-direction: column; margin: 0; }
+        
+        .chat-layout {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 20px auto;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .chat-header {
+            background: #5A7B95;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .chat-header-icon {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+        }
+
+        .chat-window {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Message Bubbles */
+        .msg { max-width: 75%; padding: 15px 20px; border-radius: 20px; font-size: 15px; line-height: 1.5; animation: fadeIn 0.3s ease; }
+        .msg-bot { background: white; color: #333; border: 1px solid #eee; align-self: flex-start; border-bottom-left-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .msg-user { background: #1976D2; color: white; align-self: flex-end; border-bottom-right-radius: 5px; box-shadow: 0 2px 10px rgba(25, 118, 210, 0.2); }
+
+        /* Quick Action Templates */
+        .templates-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        .template-chip {
+            background: #E3F2FD;
+            color: #1976D2;
+            border: 1px solid #BBDEFB;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .template-chip:hover { background: #1976D2; color: white; }
+
+        /* Input Area */
+        .chat-input-area {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .chat-input:focus { border-color: #1976D2; }
+        .send-btn {
+            background: #1976D2;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .send-btn:hover { background: #1565C0; }
+
+        /* Typing Indicator */
+        .typing-indicator { display: none; align-self: flex-start; background: white; padding: 15px 20px; border-radius: 20px; border: 1px solid #eee; color: #888; font-style: italic; font-size: 14px; border-bottom-left-radius: 5px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <%- include('partials/navbar') %>
+
+    <div class="chat-layout">
+        <div class="chat-header">
+            <div class="chat-header-icon"><i class="material-icons">smart_toy</i></div>
+            <div>
+                <h2 style="margin: 0; font-size: 20px;">Support Assistant</h2>
+                <p style="margin: 0; font-size: 13px; opacity: 0.8;">Always here to help</p>
+            </div>
+        </div>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="msg msg-bot">
+                Hello! 👋 I am the Admission Architect support bot. How can I help you today? You can type a question below or choose one of the quick options.
+            </div>
+            <div class="typing-indicator" id="typingIndicator">Assistant is typing...</div>
+        </div>
+
+        <div class="templates-container" id="templateContainer">
+            <button class="template-chip" onclick="sendTemplate('How do I book a counselor session?')">Book a session</button>
+            <button class="template-chip" onclick="sendTemplate('What are the UK Visa requirements?')">Visa requirements</button>
+            <button class="template-chip" onclick="sendTemplate('How much does studying abroad cost?')">Cost & Calculator</button>
+            <button class="template-chip" onclick="sendTemplate('Where can I find my mock test scores?')">Find my scores</button>
+        </div>
+
+        <form class="chat-input-area" id="chatForm" onsubmit="handleSend(event)">
+            <input type="text" id="userInput" class="chat-input" placeholder="Type your question here..." autocomplete="off">
+            <button type="submit" class="send-btn"><i class="material-icons">send</i></button>
+        </form>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('chatWindow');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const templateContainer = document.getElementById('templateContainer');
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `msg ${sender === 'user' ? 'msg-user' : 'msg-bot'}`;
+            div.innerText = text;
+            chatWindow.insertBefore(div, typingIndicator);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function sendTemplate(text) {
+            templateContainer.style.display = 'none';
+            processMessage(text);
+        }
+
+        function handleSend(e) {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+            userInput.value = '';
+            templateContainer.style.display = 'none';
+            processMessage(text);
+        }
+
+        async function processMessage(text) {
+            appendMessage(text, 'user');
+            typingIndicator.style.display = 'block';
+            scrollToBottom();
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+                typingIndicator.style.display = 'none';
+                if (data.error) {
+                    appendMessage('Sorry, something went wrong: ' + data.error, 'bot');
+                } else {
+                    appendMessage(data.reply || data.response || data.message || JSON.stringify(data), 'bot');
+                }
+            } catch (err) {
+                typingIndicator.style.display = 'none';
+                appendMessage('Connection error. Please check your network and try again.', 'bot');
+            }
+        }
+    </script>
+</body>
+</html>

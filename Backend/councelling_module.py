@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from models import StudentProfile, University, get_sync_session
+# ✅ Updated imports to bypass the deleted root models.py
+from database.models import StudentProfile, University
+from database.connection import get_sync_session
 
 
 class UniversityRecommender:
@@ -35,7 +37,6 @@ class UniversityRecommender:
 
             data = []
             for u in universities:
-                # Get tuition from programs if available
                 tuition = None
                 try:
                     program_tuitions = [
@@ -77,14 +78,12 @@ class UniversityRecommender:
             print("⚠️  Model not trained yet. Run load_and_train() first.")
             return []
 
-        # CGPA → desired ranking
         try:
             cgpa_val = float(user_profile.cgpa or 0)
         except Exception:
             cgpa_val = 0.0
         desired_rank = 50 if cgpa_val >= 3.5 else 200
 
-        # FIX: Use budget_min / budget_max (the actual schema columns)
         desired_tuition = 20000.0
         try:
             bmin = user_profile.budget_min
@@ -102,13 +101,9 @@ class UniversityRecommender:
         user_vector_scaled = self.scaler.transform(user_vector)
         distances, indices = self.model.kneighbors(user_vector_scaled)
 
-        print(f"\n🎓 Based on your profile (CGPA: {user_profile.cgpa}, Budget: ${desired_tuition:,.0f}/yr):")
-        print("We recommend these universities:\n")
-
         recommendations = []
         for i in indices[0]:
             uni = self.universities_df.iloc[i]
-            print(f"  🏛️  {uni['name']}  (Rank: #{uni['ranking']}, Avg Tuition: ${uni['tuition']:,.0f}/yr)")
             recommendations.append(uni.to_dict())
 
         return recommendations
@@ -117,55 +112,6 @@ class UniversityRecommender:
 class Counselor:
     def __init__(self, user_id):
         self.user_id = user_id
-
-    def build_profile(self):
-        """Interactive interview to gather and save student profile."""
-        print("\n--- Student Counseling Session ---")
-
-        try:
-            cgpa = float(input("Your current CGPA (e.g., 3.2): ").strip())
-        except ValueError:
-            cgpa = 0.0
-
-        major = input("Intended major: ").strip()
-
-        # FIX: Collect budget as min/max numbers (matching the schema)
-        print("Annual tuition budget:")
-        try:
-            budget_min = float(input("  Minimum ($): ").strip())
-        except ValueError:
-            budget_min = 10000.0
-        try:
-            budget_max = float(input("  Maximum ($): ").strip())
-        except ValueError:
-            budget_max = 30000.0
-
-        country = input("Preferred country: ").strip()
-
-        session = get_sync_session()
-        try:
-            profile = session.query(StudentProfile).filter_by(user_id=self.user_id).first()
-
-            if not profile:
-                profile = StudentProfile(user_id=self.user_id)
-                session.add(profile)
-
-            profile.cgpa = cgpa
-            profile.major_interest = major
-            profile.budget_min = budget_min    # ✅ Correct column
-            profile.budget_max = budget_max    # ✅ Correct column
-            profile.preferred_country = country
-
-            session.commit()
-            session.refresh(profile)
-            print("✅ Profile saved successfully!")
-            return profile
-        except Exception as e:
-            session.rollback()
-            print(f"❌ Error saving profile: {e}")
-            return None
-        finally:
-            session.close()
 
     def get_profile(self):
         """Fetch the current profile from DB."""

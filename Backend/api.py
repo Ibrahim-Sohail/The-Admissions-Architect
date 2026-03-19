@@ -1,22 +1,28 @@
 """
-api.py — FastAPI REST API with proper auth, chat history, and test history.
+api.py — FastAPI REST API (Randomized Edition)
 """
 import uuid
 import os
 import re
+import json
+import random
+from datetime import datetime, timedelta
+from typing import Optional
+
 from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Cookie
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
 import bcrypt
 import jwt
-from datetime import datetime, timedelta
+from groq import Groq
 
-from models import (User, TestSession, StudentProfile, University, Program,
-                    ChatMessage, init_db, get_sync_session)
+from database.models import (User, TestSession, StudentProfile, University, Program, ChatMessage)
+from database.connection import get_sync_session
+from database.init_db import push_schema
+
 from gre_module import GREPrep
 from ielts_module import IELTSPrep
 from councelling_module import Counselor, UniversityRecommender, populate_dummy_data
@@ -33,6 +39,7 @@ app.add_middleware(
 
 JWT_SECRET = os.getenv("JWT_SECRET", "admission-architect-jwt-secret-2024")
 JWT_EXPIRE_DAYS = 7
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def make_token(user_id: str) -> str:
     payload = {"user_id": user_id, "exp": datetime.utcnow() + timedelta(days=JWT_EXPIRE_DAYS)}
@@ -47,14 +54,11 @@ def verify_token(token: str) -> Optional[str]:
 
 @app.on_event("startup")
 async def startup():
-    await init_db()
+    await push_schema()
     populate_dummy_data()
     print("✅ API ready.")
 
-# ==============================================================
-# AUTH
-# ==============================================================
-
+# --- AUTH ---
 class SignupRequest(BaseModel):
     username: str
     email: str
@@ -84,7 +88,7 @@ def signup(data: SignupRequest):
             raise HTTPException(status_code=400, detail="Email already registered.")
 
         hashed = bcrypt.hashpw(data.password.encode(), bcrypt.gensalt()).decode()
-        token = str(uuid.uuid4())  # verification token
+        token = str(uuid.uuid4())
         user = User(
             id=str(uuid.uuid4()),
             username=data.username.strip(),
@@ -96,7 +100,6 @@ def signup(data: SignupRequest):
         session.add(user)
         session.commit()
         session.refresh(user)
-
         return {"user_id": str(user.id), "email": user.email, "verification_token": token}
     except HTTPException:
         raise
@@ -105,6 +108,7 @@ def signup(data: SignupRequest):
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
+
 @app.get("/api/auth/verify/{token}")
 def verify_email(token: str):
     session = get_sync_session()
@@ -118,19 +122,11 @@ def verify_email(token: str):
         return {"success": True, "email": user.email}
     except HTTPException:
         raise
-    except Exception as e:
-        session.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
         
 @app.post("/api/auth/login")
 def login(data: LoginRequest):
-    if not validate_email(data.email):
-        raise HTTPException(status_code=400, detail="Invalid email address.")
-    if not data.password:
-        raise HTTPException(status_code=400, detail="Password is required.")
-
     session = get_sync_session()
     try:
         user = session.query(User).filter_by(email=data.email.lower()).first()
@@ -139,7 +135,7 @@ def login(data: LoginRequest):
         if not bcrypt.checkpw(data.password.encode(), user.password_hash.encode()):
             raise HTTPException(status_code=401, detail="Incorrect password.")
         if not user.is_active:
-            raise HTTPException(status_code=403, detail="EMAIL_NOT_VERIFIED")  # special code frontend catches
+            raise HTTPException(status_code=403, detail="EMAIL_NOT_VERIFIED") 
 
         token = make_token(str(user.id))
         return {"token": token, "user_id": str(user.id), "username": user.username, "email": user.email}
@@ -148,10 +144,7 @@ def login(data: LoginRequest):
     finally:
         session.close()
 
-# ==============================================================
-# PROFILE
-# ==============================================================
-
+# --- PROFILE & UNI ---
 class ProfileRequest(BaseModel):
     user_id: str
     cgpa: float
@@ -169,15 +162,13 @@ def save_profile(data: ProfileRequest):
             profile = StudentProfile(user_id=data.user_id)
             session.add(profile)
         profile.cgpa = data.cgpa
+        profile.gpa  = data.cgpa         
         profile.major_interest = data.major_interest
         profile.budget_min = data.budget_min
         profile.budget_max = data.budget_max
         profile.preferred_country = data.preferred_country
         session.commit()
         return {"success": True}
-    except Exception as e:
-        session.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
 
@@ -189,19 +180,12 @@ def get_profile(user_id: str):
         if not profile:
             return {"exists": False}
         return {
-            "exists": True,
-            "cgpa": float(profile.cgpa or 0),
-            "major_interest": profile.major_interest,
-            "budget_min": float(profile.budget_min or 0),
-            "budget_max": float(profile.budget_max or 0),
+            "exists": True, "cgpa": float(profile.cgpa or 0), "major_interest": profile.major_interest,
+            "budget_min": float(profile.budget_min or 0), "budget_max": float(profile.budget_max or 0),
             "preferred_country": profile.preferred_country,
         }
     finally:
         session.close()
-
-# ==============================================================
-# UNIVERSITY RECOMMENDATIONS
-# ==============================================================
 
 class RecommendRequest(BaseModel):
     user_id: str
@@ -220,27 +204,7 @@ def recommend_universities(data: RecommendRequest):
     finally:
         session.close()
 
-@app.get("/api/universities/all")
-def get_all_universities():
-    session = get_sync_session()
-    try:
-        unis = session.query(University).all()
-        result = []
-        for u in unis:
-            programs = [{"course_name": p.course_name, "degree_level": p.degree_level,
-                         "tuition_fee": float(p.tuition_fee) if p.tuition_fee else None,
-                         "ielts_requirement": float(p.ielts_requirement) if p.ielts_requirement else None}
-                        for p in (u.programs or [])]
-            result.append({"id": str(u.id), "name": u.name, "location": u.location,
-                           "global_ranking": u.global_ranking, "programs": programs})
-        return {"universities": result}
-    finally:
-        session.close()
-
-# ==============================================================
-# GRE
-# ==============================================================
-
+# --- GRE ---
 class GREQuestionRequest(BaseModel):
     user_id: str
     topic: str
@@ -261,8 +225,7 @@ class GREEssayRequest(BaseModel):
 def gre_question(data: GREQuestionRequest):
     gre = GREPrep(data.user_id)
     result = gre.generate_question(data.topic)
-    if "error" in result:
-        raise HTTPException(status_code=500, detail=result["error"])
+    if "error" in result: raise HTTPException(status_code=500, detail=result["error"])
     return result
 
 @app.post("/api/gre/submit-answer")
@@ -279,10 +242,7 @@ def gre_essay(data: GREEssayRequest):
     gre.save_result("Analytical Writing", result.get("score", 0), result.get("feedback", ""))
     return result
 
-# ==============================================================
-# IELTS
-# ==============================================================
-
+# --- IELTS ---
 class IELTSRequest(BaseModel):
     user_id: str
 
@@ -293,6 +253,7 @@ class IELTSWritingRequest(BaseModel):
 class IELTSSpeakingRequest(BaseModel):
     user_id: str
     response_text: str
+    topic: str = "" # ✅ Added topic field to know what they are answering!
 
 class IELTSScoreRequest(BaseModel):
     user_id: str
@@ -306,41 +267,36 @@ def ielts_reading(data: IELTSRequest):
 
 @app.post("/api/ielts/listening")
 def ielts_listening(data: IELTSRequest):
-    from groq import Groq
-    import json
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-    prompt = """
-    Write a short conversation between two university students discussing course registration.
+    # ✅ Randomized listening topics!
+    topics = ["booking a flight", "library membership", "course registration", "renting an apartment", "planning a university event", "opening a bank account", "discussing a research project"]
+    topic = random.choice(topics)
+
+    prompt = f"""
+    Write a short conversation between two people discussing {topic}.
     Provide 3 multiple-choice questions about specific details mentioned in the conversation.
     Output STRICTLY in JSON (no markdown):
-    {
-        "script": "Student A: ... Student B: ...",
+    {{
+        "script": "Person A: ... Person B: ...",
         "questions": [
-            {"q": "Question?", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "answer": "A"},
-            {"q": "Question?", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "answer": "B"},
-            {"q": "Question?", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "answer": "C"}
+            {{"q": "Question?", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "answer": "A"}},
+            {{"q": "Question?", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "answer": "B"}},
+            {{"q": "Question?", "options": ["A) ...", "B) ...", "C) ...", "D) ..."], "answer": "C"}}
         ]
-    }
+    }}
     """
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[{"role": "user", "content": prompt}]
-    )
+    response = groq_client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role": "user", "content": prompt}])
     clean = response.choices[0].message.content.replace('```json','').replace('```','').strip()
     return json.loads(clean)
 
 @app.post("/api/ielts/grade-writing")
 def ielts_writing(data: IELTSWritingRequest):
-    from groq import Groq
-    import json
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     prompt = f"""
     Grade this IELTS Writing Task 2 essay on band scale 0-9.
     Essay: "{data.essay_text}"
     Output STRICTLY in JSON (no markdown):
     {{"band": 6.5, "feedback": "...", "task_achievement": 6.5, "coherence": 7.0, "lexical_resource": 6.5, "grammar": 6.0}}
     """
-    response = client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role": "user", "content": prompt}])
+    response = groq_client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role": "user", "content": prompt}])
     clean = response.choices[0].message.content.replace('```json','').replace('```','').strip()
     result = json.loads(clean)
     IELTSPrep(data.user_id).save_result("Writing", result.get("band", 0), result.get("feedback", ""))
@@ -348,17 +304,14 @@ def ielts_writing(data: IELTSWritingRequest):
 
 @app.post("/api/ielts/grade-speaking")
 def ielts_speaking(data: IELTSSpeakingRequest):
-    from groq import Groq
-    import json
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     prompt = f"""
     Grade this IELTS Speaking response on band scale 0-9.
-    Topic: "Describe a memorable journey you have taken."
+    Topic: "{data.topic}"
     Response: "{data.response_text}"
     Output STRICTLY in JSON (no markdown):
     {{"band": 6.5, "feedback": "..."}}
     """
-    response = client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role": "user", "content": prompt}])
+    response = groq_client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role": "user", "content": prompt}])
     clean = response.choices[0].message.content.replace('```json','').replace('```','').strip()
     result = json.loads(clean)
     IELTSPrep(data.user_id).save_result("Speaking", result.get("band", 0), result.get("feedback", ""))
@@ -369,52 +322,35 @@ def ielts_save(data: IELTSScoreRequest):
     IELTSPrep(data.user_id).save_result(data.module, data.score, data.feedback)
     return {"success": True}
 
-# ==============================================================
-# AI CHAT — with persistent history per user
-# ==============================================================
-
+# --- CHAT & PROGRESS ---
 class ChatRequest(BaseModel):
     user_id: str
     message: str
+    bot_type: str = "general" 
 
 @app.post("/api/chat")
 def chat(data: ChatRequest):
-    from groq import Groq
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     session = get_sync_session()
-
     try:
-        # Load last 20 messages from DB for this user
-        past = session.query(ChatMessage)\
-            .filter_by(user_id=data.user_id)\
-            .order_by(ChatMessage.timestamp.asc())\
-            .limit(20).all()
+        _chat_order = getattr(ChatMessage, "timestamp", ChatMessage.id)
+        past = session.query(ChatMessage).filter_by(user_id=data.user_id).order_by(_chat_order.asc()).limit(20).all()
 
-        system_prompt = """You are an expert study abroad consultant for The Admission Architect.
-        Help students with: university applications, IELTS/GRE prep, UK visa requirements,
-        scholarships, and study abroad planning. Be concise, friendly, and helpful. Max 150 words."""
+        if data.bot_type == "gre":
+            system_prompt = """You are an expert GRE Test Tutor. Help students with GRE Verbal, Quant, and Analytical Writing. Be encouraging. Max 150 words."""
+        else:
+            system_prompt = """You are an expert study abroad consultant. Help students with applications, visas, and study planning. Max 150 words."""
 
         messages = [{"role": "system", "content": system_prompt}]
-        for msg in past:
-            messages.append({"role": msg.role, "content": msg.content})
+        for msg in past: messages.append({"role": msg.role, "content": msg.content})
         messages.append({"role": "user", "content": data.message})
 
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages,
-            max_tokens=200,
-        )
+        response = groq_client.chat.completions.create(model="llama-3.3-70b-versatile", messages=messages, max_tokens=200)
         reply = response.choices[0].message.content
 
-        # Save both messages to DB
         session.add(ChatMessage(user_id=data.user_id, role="user", content=data.message))
         session.add(ChatMessage(user_id=data.user_id, role="assistant", content=reply))
         session.commit()
-
         return {"reply": reply}
-    except Exception as e:
-        session.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
 
@@ -422,30 +358,25 @@ def chat(data: ChatRequest):
 def get_chat_history(user_id: str):
     session = get_sync_session()
     try:
-        messages = session.query(ChatMessage)\
-            .filter_by(user_id=user_id)\
-            .order_by(ChatMessage.timestamp.asc()).all()
-        return {"history": [{"role": m.role, "content": m.content,
-                             "timestamp": m.timestamp.strftime("%Y-%m-%d %H:%M") if m.timestamp else ""}
-                            for m in messages]}
+        _chat_order = getattr(ChatMessage, "timestamp", ChatMessage.id)
+        messages = session.query(ChatMessage).filter_by(user_id=user_id).order_by(_chat_order.asc()).all()
+        def _fmt_ts(m):
+            ts = getattr(m, "timestamp", None)
+            return ts.strftime("%Y-%m-%d %H:%M") if ts else ""
+        return {"history": [{"role": m.role, "content": m.content, "timestamp": _fmt_ts(m)} for m in messages]}
     finally:
         session.close()
-
-# ==============================================================
-# PROGRESS / HISTORY
-# ==============================================================
 
 @app.get("/api/progress/{user_id}")
 def get_progress(user_id: str):
     session = get_sync_session()
     try:
-        results = session.query(TestSession).filter_by(user_id=user_id)\
-            .order_by(TestSession.timestamp.desc()).all()
-        return {"history": [{"test_type": r.test_type.value if r.test_type else "N/A",
-                              "module": r.module or "", "score": float(r.score_obtained) if r.score_obtained else 0,
-                              "feedback": r.feedback or "",
-                              "date": r.timestamp.strftime("%Y-%m-%d") if r.timestamp else ""}
-                             for r in results]}
+        _ts_order = getattr(TestSession, "timestamp", TestSession.id)
+        results = session.query(TestSession).filter_by(user_id=user_id).order_by(_ts_order.desc()).all()
+        def _fmt_date(r):
+            ts = getattr(r, "timestamp", None)
+            return ts.strftime("%Y-%m-%d") if ts else ""
+        return {"history": [{"test_type": r.test_type.value if r.test_type else "N/A", "module": r.module or "", "score": float(r.score_obtained) if r.score_obtained else 0, "feedback": r.feedback or "", "date": _fmt_date(r)} for r in results]}
     finally:
         session.close()
 

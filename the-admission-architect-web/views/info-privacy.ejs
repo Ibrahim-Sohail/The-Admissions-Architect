@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body { padding-top: 0 !important; background: #F9FAFB; }
+        .legal-container { max-width: 900px; margin: -60px auto 60px; background: white; padding: 50px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; z-index: 10; }
+        .legal-content h3 { color: #1976D2; margin-top: 35px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .legal-content h4 { color: #5A7B95; margin-top: 25px; }
+        .legal-content p, .legal-content li { color: #555; line-height: 1.8; font-size: 15px; margin-bottom: 10px; }
+        .legal-content ul { padding-left: 20px; }
+        .highlight-box { background: #E3F2FD; border-left: 4px solid #1976D2; padding: 20px; border-radius: 0 8px 8px 0; margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <header class="landing-hero" style="height: 40vh; background: linear-gradient(to right, rgba(13, 71, 161, 0.9), rgba(25, 118, 210, 0.7));">
+        <h1 style="font-size: 40px; margin-top: 50px;">Privacy Policy</h1>
+        <p>How we protect your data and AI interactions.</p>
+    </header>
+
+    <div class="container legal-container">
+        <div class="legal-content">
+            <h2 style="color: #333; margin-top: 0;">Privacy Policy for The Admission Architect</h2>
+            
+            <h3>1. Information We Collect</h3>
+            <ul>
+                <li><strong>Personal Data:</strong> Names, email addresses, phone numbers, and academic records provided during account registration.</li>
+                <li><strong>Interaction Data:</strong> Transcripts and audio recordings from interactions with our AI voice consultant and chatbot.</li>
+                <li><strong>Usage Data:</strong> Information on how you navigate the platform, including test prep progress and university search history.</li>
+            </ul>
+
+            <h3>2. How We Use Your Information</h3>
+            <ul>
+                <li>To provide and maintain the core functionalities of the platform.</li>
+                <li>To train and improve the accuracy of our AI-driven guidance tools.</li>
+                <li>To communicate important updates, marketing materials, and support responses.</li>
+            </ul>
+
+            <h3>3. Data Sharing and Disclosure</h3>
+            <ul>
+                <li>We do not sell your personal data to third parties.</li>
+                <li>We may share data with trusted third-party service providers (like cloud hosting or payment processors) strictly to operate our platform.</li>
+                <li>We may disclose information if required by law or to protect our legal rights.</li>
+            </ul>
+
+            <h3>4. Data Security</h3>
+            <p>We implement industry-standard security measures to protect your personal and academic information from unauthorized access, alteration, or disclosure.</p>
+
+            <h3>5. Your Privacy Rights</h3>
+            <p>You have the right to request access to, correction of, or deletion of your personal data and AI chat history at any time by contacting our support team.</p>
+
+            <div class="highlight-box">
+                <h3 style="margin-top: 0; border: none; padding: 0;">Voice Data Processing and AI Consultant Audio</h3>
+                
+                <h4>A. Collection and Definition of Voice Data</h4>
+                <ul>
+                    <li>When you interact with our AI voice consultant, we collect audio recordings of your voice and generate digital text transcriptions of those conversations.</li>
+                    <li>We may also generate a digital representation of your unique vocal characteristics (a "voiceprint" or "voice embedding") strictly to facilitate real-time, responsive dialogue. This is considered biometric information under applicable data protection laws.</li>
+                </ul>
+
+                <h4>B. Purpose and Use of Audio Data</h4>
+                <ul>
+                    <li><strong>Service Delivery:</strong> Your voice data is processed in real-time to allow the AI consultant to understand your queries and provide accurate university admission guidance.</li>
+                    <li><strong>AI Model Training:</strong> We may use de-identified or anonymized audio recordings and text transcriptions to train and improve our proprietary artificial intelligence models. Automated redaction tools are used to strip sensitive personal information from these transcripts before they are used for training.</li>
+                </ul>
+
+                <h4>C. Data Security and Storage</h4>
+                <ul>
+                    <li><strong>Encryption:</strong> All voice data is encrypted both in transit (while you are speaking to the AI) and at rest (when stored on our secure cloud servers).</li>
+                    <li><strong>Access Controls:</strong> Access to stored audio data and transcripts is strictly limited to authorized personnel who require it for system maintenance or support.</li>
+                </ul>
+
+                <h4>D. Data Retention and Deletion</h4>
+                <ul>
+                    <li>We practice data minimization by only keeping audio recordings for as long as is necessary to provide you with the service and improve our platform.</li>
+                    <li>If you delete your account or submit a deletion request, we will immediately delete any identifiable audio recordings and associated transcripts. We will also initiate the permanent deletion of any de-identified voiceprint templates within 30 days.</li>
+                </ul>
+
+                <h4>E. Your Control and Opt-Out Rights</h4>
+                <ul>
+                    <li>You have the right to access, review, and request the deletion of your voice data history at any time through your account settings.</li>
+                    <li>You may opt out of having your audio recordings and transcriptions used for AI model training. Opting out will not affect your ability to use the AI voice consultant, and we will apply your preferences to all future interactions.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -3,209 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Admission Architect</title>
+    <title>My Profile</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .profile-header { display:flex; align-items:center; gap:20px; margin-bottom:25px; background:white; padding:25px; border-radius:16px; box-shadow:0 2px 10px rgba(0,0,0,0.06); }
-        .avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#5A7B95,#1976D2); color:white; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:bold; flex-shrink:0; }
-        .stats-bar { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-bottom:25px; }
-        .stat-card { background:white; border-radius:12px; padding:15px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
-        .stat-card strong { display:block; font-size:26px; color:#5A7B95; }
-        .stat-card span { font-size:12px; color:#999; }
-        .tab-bar { display:flex; gap:5px; margin-bottom:25px; background:white; padding:6px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow-x:auto; }
-        .tab-btn { background:none; border:none; padding:10px 16px; font-size:14px; cursor:pointer; color:#666; border-radius:8px; font-weight:500; transition:all 0.2s; white-space:nowrap; display:flex; align-items:center; gap:6px; }
-        .tab-btn.active { background:#5A7B95; color:white; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        .history-table { width:100%; border-collapse:collapse; }
-        .history-table th { background:#f8f9fa; padding:12px 15px; text-align:left; font-size:12px; color:#666; text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid #eee; }
-        .history-table td { padding:13px 15px; border-bottom:1px solid #f5f5f5; font-size:14px; vertical-align:middle; }
-        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:bold; }
-        .badge-gre { background:#E0F7FA; color:#00838F; }
-        .badge-ielts { background:#F3E5F5; color:#7B1FA2; }
-        .score-bar-wrap { display:flex; align-items:center; gap:10px; }
-        .score-bar { height:6px; border-radius:3px; background:#e0e0e0; flex:1; min-width:50px; overflow:hidden; }
-        .score-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#5A7B95,#448AFF); }
-        .chat-list { display:flex; flex-direction:column; gap:10px; max-height:500px; overflow-y:auto; padding:5px; }
-        .chat-row-u { display:flex; justify-content:flex-end; }
-        .chat-row-a { display:flex; justify-content:flex-start; }
-        .bubble-u { background:#5A7B95; color:white; padding:11px 15px; border-radius:16px 16px 4px 16px; max-width:72%; font-size:14px; line-height:1.5; }
-        .bubble-a { background:#f0f0f0; color:#333; padding:11px 15px; border-radius:16px 16px 16px 4px; max-width:72%; font-size:14px; line-height:1.5; }
-        .bubble-time { font-size:11px; opacity:0.55; margin-top:4px; display:block; }
-        .profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
-        .profile-field { background:#f8f9fa; border-radius:10px; padding:15px; }
-        .profile-field label { font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#999; display:block; margin-bottom:5px; }
-        .profile-field p { margin:0; font-weight:600; color:#333; font-size:15px; }
-        .empty-state { text-align:center; padding:50px 20px; color:#bbb; }
-        .empty-state i { font-size:52px; display:block; margin-bottom:10px; }
-        @media(max-width:600px){ .profile-grid{grid-template-columns:1fr;} .stats-bar{grid-template-columns:1fr 1fr;} }
+        /* Specific Styles to make document rows look cleaner like inputs */
+        .doc-section-title {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 25px 0 15px 0;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .doc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+            transition: border-color 0.2s;
+        }
+
+        .doc-item:hover {
+            border-color: #5A7B95;
+        }
+
+        .doc-name {
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .doc-action-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* The mock file input look */
+        .mock-file-input {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #888;
+            width: 150px;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
-<div class="container">
 
-    <div class="profile-header">
-        <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
-        <div style="flex:1;">
-            <h2 style="margin:0; color:#333;"><%= user.name %></h2>
-            <p style="margin:4px 0 0; color:#888; font-size:14px;"><%= user.email %></p>
-        </div>
-        <a href="/logout" style="display:flex; align-items:center; gap:5px; font-size:13px; color:#d32f2f; text-decoration:none; padding:8px 14px; border:1px solid #ffcdd2; border-radius:8px;">
-            <i class="material-icons" style="font-size:16px;">logout</i> Logout
-        </a>
-    </div>
-
-    <div class="stats-bar">
-        <div class="stat-card">
-            <strong><%= history.length %></strong>
-            <span>Tests Taken</span>
-        </div>
-        <div class="stat-card">
-            <strong><%= chatHistory.length %></strong>
-            <span>Chat Messages</span>
-        </div>
-        <div class="stat-card">
-            <strong><%= profile.exists ? (profile.cgpa || '—') : '—' %></strong>
-            <span>CGPA</span>
-        </div>
-    </div>
-
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab('testHistory',this)">
-            <i class="material-icons">quiz</i> Test History
-        </button>
-        <button class="tab-btn" onclick="openTab('chatHistoryTab',this)">
-            <i class="material-icons">forum</i> Chat History
-        </button>
-        <button class="tab-btn" onclick="openTab('profileTab',this)">
-            <i class="material-icons">person</i> Academic Profile
-        </button>
-        <button class="tab-btn" onclick="openTab('docsTab',this)">
-            <i class="material-icons">folder</i> Documents
-        </button>
-    </div>
-
-    <!-- TEST HISTORY -->
-    <div id="testHistory" class="tab-content active">
-        <div class="card" style="padding:0; overflow:hidden;">
-            <% if (history && history.length > 0) { %>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>Test</th><th>Module</th><th>Score</th><th>Feedback</th><th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <% history.forEach(function(item){ %>
-                    <tr>
-                        <td><span class="badge <%= item.test_type === 'GRE' ? 'badge-gre' : 'badge-ielts' %>"><%= item.test_type %></span></td>
-                        <td style="font-weight:500;"><%= item.module %></td>
-                        <td>
-                            <div class="score-bar-wrap">
-                                <strong style="min-width:28px;"><%= item.score %></strong>
-                                <div class="score-bar"><div class="score-bar-fill" style="width:<%= Math.min(item.score/9*100,100) %>%;"></div></div>
-                            </div>
-                        </td>
-                        <td style="color:#666; font-size:13px; max-width:200px;">
-                            <%= item.feedback ? item.feedback.substring(0,60) + (item.feedback.length > 60 ? '...' : '') : '—' %>
-                        </td>
-                        <td style="color:#aaa; font-size:13px; white-space:nowrap;"><%= item.date %></td>
-                    </tr>
-                <% }); %>
-                </tbody>
-            </table>
-            <% } else { %>
-            <div class="empty-state">
-                <i class="material-icons">quiz</i>
-                <p>No test history yet.</p>
-                <a href="/test-modules" class="btn" style="display:inline-block; width:auto; margin-top:10px;">Start a Test</a>
+    <div class="container">
+        
+        <div class="profile-header-card">
+            <div class="profile-avatar-container">
+                <img src="<%= user.photo %>" class="profile-avatar" id="avatarPreview" onerror="this.src='https://via.placeholder.com/150'">
+                <button type="button" class="edit-avatar-btn" onclick="editPhoto()">
+                    <i class="material-icons" style="font-size: 18px;">edit</i>
+                </button>
             </div>
-            <% } %>
-        </div>
-    </div>
-
-    <!-- CHAT HISTORY -->
-    <div id="chatHistoryTab" class="tab-content">
-        <div class="card">
-            <% if (chatHistory && chatHistory.length > 0) { %>
-            <div class="chat-list">
-                <% chatHistory.forEach(function(msg){ %>
-                <div class="<%= msg.role === 'user' ? 'chat-row-u' : 'chat-row-a' %>">
-                    <div class="<%= msg.role === 'user' ? 'bubble-u' : 'bubble-a' %>">
-                        <%= msg.content %>
-                        <span class="bubble-time"><%= msg.timestamp %></span>
+            
+            <form action="/update-profile" method="POST" id="profileForm">
+                <input type="hidden" name="photoUrl" id="photoInput" value="<%= user.photo %>">
+                
+                <div class="profile-form-grid">
+                    <div>
+                        <label style="font-size:12px; color:#666; font-weight:bold;">Full Name</label>
+                        <input type="text" name="name" value="<%= user.name %>" class="input-field" style="margin-top:5px;">
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:#666; font-weight:bold;">Phone Number</label>
+                        <input type="text" name="phone" value="<%= user.phone %>" class="input-field" style="margin-top:5px;">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="font-size:12px; color:#666; font-weight:bold;">Email Address</label>
+                        <input type="email" name="email" value="<%= user.email %>" class="input-field" style="margin-top:5px;">
                     </div>
                 </div>
-                <% }); %>
-            </div>
-            <div style="text-align:center; margin-top:20px; padding-top:15px; border-top:1px solid #eee;">
-                <a href="/chat" class="btn" style="display:inline-block; width:auto;">Continue Chatting</a>
-            </div>
-            <% } else { %>
-            <div class="empty-state">
-                <i class="material-icons">forum</i>
-                <p>No chat history yet.</p>
-                <a href="/chat" class="btn" style="display:inline-block; width:auto; margin-top:10px;">Start a Conversation</a>
-            </div>
-            <% } %>
-        </div>
-    </div>
-
-    <!-- ACADEMIC PROFILE -->
-    <div id="profileTab" class="tab-content">
-        <div class="card">
-            <% if (profile && profile.exists) { %>
-            <h4 style="margin:0 0 20px; color:#333;">Your Academic Profile</h4>
-            <div class="profile-grid">
-                <div class="profile-field"><label>CGPA</label><p><%= profile.cgpa %> / 4.0</p></div>
-                <div class="profile-field"><label>Major Interest</label><p><%= profile.major_interest %></p></div>
-                <div class="profile-field"><label>Budget Range (per year)</label><p>£<%= Number(profile.budget_min).toLocaleString() %> – £<%= Number(profile.budget_max).toLocaleString() %></p></div>
-                <div class="profile-field"><label>Preferred Country</label><p><%= profile.preferred_country %></p></div>
-            </div>
-            <a href="/university" class="btn" style="display:inline-block; width:auto; margin-top:20px;">Update via University Finder</a>
-            <% } else { %>
-            <div class="empty-state">
-                <i class="material-icons">person_outline</i>
-                <p>No academic profile yet.</p>
-                <p style="font-size:13px;">Use the University Finder to set your preferences.</p>
-                <a href="/university" class="btn" style="display:inline-block; width:auto; margin-top:10px;">Build My Profile</a>
-            </div>
-            <% } %>
-        </div>
-    </div>
-
-    <!-- DOCUMENTS -->
-    <div id="docsTab" class="tab-content">
-        <div class="card">
-            <h4 style="margin:0 0 15px;">Upload Documents</h4>
-            <form action="/upload-doc" method="POST" style="display:flex; gap:10px; flex-wrap:wrap;">
-                <input type="text" name="docName" class="input-field" placeholder="e.g. IELTS Certificate" style="flex:1; min-width:200px;" required>
-                <button type="submit" class="btn" style="width:auto;">Add</button>
+                
+                <button type="submit" class="btn" style="width: auto; margin-top: 20px; padding: 10px 30px; background-color: #5A7B95;">
+                    Save Changes
+                </button>
             </form>
-            <% if (docs && Object.keys(docs).length > 0) { %>
-            <ul style="margin-top:15px; padding:0; list-style:none;">
-                <% Object.keys(docs).forEach(function(doc){ %>
-                <li style="padding:12px; background:#f5f5f5; border-radius:8px; margin-bottom:8px; display:flex; align-items:center; gap:10px;">
-                    <i class="material-icons" style="color:#4CAF50; font-size:18px;">check_circle</i>
-                    <span style="font-size:14px;"><%= doc %></span>
-                </li>
+        </div>
+
+        <div class="profile-tabs">
+            <button class="tab-btn active" onclick="openTab('docs')">Documents</button>
+            <button class="tab-btn" onclick="openTab('bookings')">My Bookings</button>
+            <button class="tab-btn" onclick="openTab('favorites')">Favorites</button>
+        </div>
+
+        <div id="docs" class="tab-content active">
+            <div class="card" style="border: none; box-shadow: none; padding: 0;">
+                <h3 style="margin-top:0; color: #333; font-size: 20px;">Document Center</h3>
+                <p style="color:#666; font-size:14px;">Upload your required documents below. You can update or replace them at any time.</p>
+
+                <div class="doc-section-title" style="background:#E3F2FD; color:#1976D2;">
+                    <i class="material-icons">badge</i> 
+                    Identification Document
+                </div>
+                <% 
+                    const idDocs = [
+                        "Passport", 
+                        "National ID", 
+                        "National Address", 
+                        "Academic Documents",
+                        "Predicted Grades",
+                        "College Docs",
+                        "IELTS",
+                        "GRE (If available)",
+                        "Academic Recommendation Letters (1 or 2)"
+                    ]; 
+                %>
+                <% idDocs.forEach(function(doc) { %>
+                    <div class="doc-item">
+                        <div class="doc-name"><i class="material-icons" style="font-size:16px; color:#1976D2; vertical-align:middle; margin-right:8px;">description</i> <%= doc %></div>
+                        
+                        <div class="doc-action-area">
+                            <% if (docs[doc]) { %>
+                                <div class="mock-file-input" style="color:#2e7d32; border-color:#c8e6c9; background:#e8f5e9;">
+                                    <i class="material-icons" style="font-size:14px; vertical-align:middle;">check_circle</i> file_uploaded.pdf
+                                </div>
+                            <% } else { %>
+                                <div class="mock-file-input">
+                                    No file chosen...
+                                </div>
+                            <% } %>
+                            
+                            <form action="/upload-doc" method="POST" style="margin:0;">
+                                <input type="hidden" name="docName" value="<%= doc %>">
+                                <button type="submit" class="btn-small btn-outline" style="min-width: 80px;">
+                                    <% if (docs[doc]) { %> Update <% } else { %> Upload <% } %>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 <% }); %>
-            </ul>
+
+                <div class="doc-section-title" style="background:#F3E5F5; color:#8E44AD;">
+                    <i class="material-icons">work</i> 
+                    Professional Documents
+                </div>
+                <% 
+                    const profDocs = [
+                        "CV", 
+                        "Experience Letters", 
+                        "Professional Recommendation Letters"
+                    ]; 
+                %>
+                <% profDocs.forEach(function(doc) { %>
+                    <div class="doc-item">
+                        <div class="doc-name"><i class="material-icons" style="font-size:16px; color:#8E44AD; vertical-align:middle; margin-right:8px;">assignment_ind</i> <%= doc %></div>
+                        
+                        <div class="doc-action-area">
+                            <% if (docs[doc]) { %>
+                                <div class="mock-file-input" style="color:#2e7d32; border-color:#c8e6c9; background:#e8f5e9;">
+                                    <i class="material-icons" style="font-size:14px; vertical-align:middle;">check_circle</i> file_uploaded.pdf
+                                </div>
+                            <% } else { %>
+                                <div class="mock-file-input">
+                                    No file chosen...
+                                </div>
+                            <% } %>
+                            
+                            <form action="/upload-doc" method="POST" style="margin:0;">
+                                <input type="hidden" name="docName" value="<%= doc %>">
+                                <button type="submit" class="btn-small btn-outline" style="min-width: 80px;">
+                                    <% if (docs[doc]) { %> Update <% } else { %> Upload <% } %>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+
+                <div class="doc-section-title" style="background:#FFF3E0; color:#E65100;">
+                    <i class="material-icons">fact_check</i> 
+                    Visa Document
+                </div>
+                <% 
+                    const visaDocs = [
+                        "Bank Statement", 
+                        "Affidavit", 
+                        "CAS / Visa Letter",
+                        "Birth Certificate"
+                    ]; 
+                %>
+                <% visaDocs.forEach(function(doc) { %>
+                    <div class="doc-item">
+                        <div class="doc-name"><i class="material-icons" style="font-size:16px; color:#E65100; vertical-align:middle; margin-right:8px;">account_balance</i> <%= doc %></div>
+                        
+                        <div class="doc-action-area">
+                            <% if (docs[doc]) { %>
+                                <div class="mock-file-input" style="color:#2e7d32; border-color:#c8e6c9; background:#e8f5e9;">
+                                    <i class="material-icons" style="font-size:14px; vertical-align:middle;">check_circle</i> file_uploaded.pdf
+                                </div>
+                            <% } else { %>
+                                <div class="mock-file-input">
+                                    No file chosen...
+                                </div>
+                            <% } %>
+                            
+                            <form action="/upload-doc" method="POST" style="margin:0;">
+                                <input type="hidden" name="docName" value="<%= doc %>">
+                                <button type="submit" class="btn-small btn-outline" style="min-width: 80px;">
+                                    <% if (docs[doc]) { %> Update <% } else { %> Upload <% } %>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div id="bookings" class="tab-content">
+            <% if (bookings.length === 0) { %>
+                <div class="card" style="text-align:center; padding:40px;">
+                    <i class="material-icons" style="font-size:48px; color:#ccc;">event_busy</i>
+                    <p>No active bookings found.</p>
+                    <a href="/booking" class="btn" style="width:auto; display:inline-block;">Book a Session</a>
+                </div>
             <% } else { %>
-            <p style="color:#bbb; margin-top:15px; font-size:14px;">No documents uploaded yet.</p>
+                <% bookings.forEach(function(booking) { %>
+                    <div class="action-card">
+                        <div>
+                            <h4 style="margin:0; color:#333;"><%= booking.type %></h4>
+                            <p style="margin:5px 0 0; color:#666;">
+                                <i class="material-icons" style="font-size:14px; vertical-align:middle;">calendar_today</i> 
+                                <%= booking.date %> at <%= booking.time %>
+                            </p>
+                        </div>
+                        <div style="display:flex;">
+                            <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" 
+                               target="_blank" class="btn-small btn-primary">
+                               Reschedule
+                            </a>
+                            <form action="/cancel-booking" method="POST" style="margin:0;">
+                                <input type="hidden" name="id" value="<%= booking.id %>">
+                                <button type="submit" class="btn-small btn-danger">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+                <p style="text-align:center; color:#999; font-size:12px; margin-top:20px;">
+                    Note: External bookings may take time to appear here.
+                </p>
             <% } %>
         </div>
+
+        <div id="favorites" class="tab-content">
+            <% if (favorites.length === 0) { %>
+                <div class="card" style="text-align:center; padding:40px;">
+                    <i class="material-icons" style="font-size:48px; color:#ccc;">favorite_border</i>
+                    <p>No favorites saved yet.</p>
+                    <a href="/university" class="btn" style="width:auto; display:inline-block;">Find Universities</a>
+                </div>
+            <% } else { %>
+                <% favorites.forEach(function(fav) { %>
+                    <div class="action-card" style="border-left-color: #FF6E40;">
+                        <div>
+                            <h4 style="margin:0; color:#333;"><%= fav.name %></h4>
+                            <p style="margin:5px 0 0; color:#666;">
+                                <i class="material-icons" style="font-size:14px; vertical-align:middle;">location_on</i> 
+                                <%= fav.location %>
+                            </p>
+                        </div>
+                        <form action="/remove-favorite" method="POST" style="margin:0;">
+                            <input type="hidden" name="id" value="<%= fav.id %>">
+                            <button type="submit" class="btn-small btn-danger">
+                                <i class="material-icons" style="font-size:14px; vertical-align:middle;">delete</i> Remove
+                            </button>
+                        </form>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+
     </div>
 
-</div>
-<%- include('partials/navbar') %>
-<script>
-    function openTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
-    }
-</script>
+    <%- include('partials/navbar') %>
+
+    <script>
+        function openTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(div => div.classList.remove('active'));
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function editPhoto() {
+            const url = prompt("Enter Image URL for profile photo:", document.getElementById('avatarPreview').src);
+            if(url) {
+                document.getElementById('avatarPreview').src = url;
+                document.getElementById('photoInput').value = url;
+            }
+        }
+    </script>
+
 </body>
 </html>
