@@ -1,186 +1,133 @@
 """
-Database models for the Admission Architect application.
+__init__.py — Central Database Models for Admission Architect.
 """
-from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, Text, ForeignKey, Table, Enum as SQLEnum
-from sqlalchemy.orm import relationship
-from datetime import datetime
 import enum
+import uuid
+from sqlalchemy import Column, String, Float, Integer, Boolean, Text, DateTime, ForeignKey, Enum, Table
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from database.connection import Base
 
-# Association table for many-to-many relationship
+# ==========================================
+# Enums & Association Tables
+# ==========================================
+
+class TestType(enum.Enum):
+    GRE = "GRE"
+    IELTS = "IELTS"
+
+class ApplicationStatus(enum.Enum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
+    REJECTED = "REJECTED"
+
 user_saved_programs = Table(
     'user_saved_programs',
     Base.metadata,
-    Column('user_id', String, ForeignKey('user.id'), primary_key=True),
-    Column('program_id', Integer, ForeignKey('program.id'), primary_key=True),
+    Column('user_id', String, ForeignKey('users.id'), primary_key=True),
+    Column('program_id', String, ForeignKey('programs.id'), primary_key=True)
 )
 
-
-class ApplicationStatus(str, enum.Enum):
-    """Application status enum."""
-    DRAFT = "draft"
-    SUBMITTED = "submitted"
-    UNDER_REVIEW = "under_review"
-    ACCEPTED = "accepted"
-    REJECTED = "rejected"
-    WAITLISTED = "waitlisted"
-
-
-class TestType(str, enum.Enum):
-    """Test type enum."""
-    GRE = "gre"
-    IELTS = "ielts"
-    TOEFL = "toefl"
-    SAT = "sat"
-
+# ==========================================
+# Primary Models
+# ==========================================
 
 class User(Base):
-    """User model."""
-    __tablename__ = "user"
+    __tablename__ = "users"
     
-    id = Column(String, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    is_active = Column(Boolean, default=False)          # ← ADD THIS
-    verification_token = Column(String, nullable=True) 
-    password_hash = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    is_active = Column(Boolean, default=False)  # False until email verified
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    username = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    is_active = Column(Boolean, default=False)
     verification_token = Column(String, nullable=True)
+
     # Relationships
     profile = relationship("StudentProfile", back_populates="user", uselist=False)
-    chat_messages = relationship("ChatMessage", back_populates="user")
-    test_sessions = relationship("TestSession", back_populates="user")
+    tests = relationship("TestSession", back_populates="user")
+    chats = relationship("ChatMessage", back_populates="user")
     applications = relationship("Application", back_populates="user")
     saved_programs = relationship("Program", secondary=user_saved_programs)
 
-
 class StudentProfile(Base):
-    """Student profile model."""
-    __tablename__ = "student_profile"
+    __tablename__ = "student_profiles"
     
-    id = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('user.id'), unique=True)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), unique=True, nullable=False)
     
-    # Academic info
-    current_education = Column(String)  # Current degree level
-    gpa = Column(Float)
-    
-    # Financial info
-    budget_min = Column(Float)
-    budget_max = Column(Float)
-    
-    # Career info
-    career_goal = Column(Text)
-    
-    # Updated timestamp
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationship
+    cgpa = Column(Float, nullable=True)
+    gpa = Column(Float, nullable=True) # Legacy sync
+    major_interest = Column(String, nullable=True)
+    budget_min = Column(Float, nullable=True)
+    budget_max = Column(Float, nullable=True)
+    preferred_country = Column(String, nullable=True)
+
     user = relationship("User", back_populates="profile")
 
-
 class TestSession(Base):
-    """Test prep session model."""
-    __tablename__ = "test_session"
+    __tablename__ = "test_sessions"
     
-    id = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('user.id'))
-    test_type = Column(SQLEnum(TestType))
-    score = Column(Float, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationship
-    user = relationship("User", back_populates="test_sessions")
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    test_type = Column(Enum(TestType), nullable=False)
+    module = Column(String, nullable=False)
+    score_obtained = Column(Float, nullable=False)
+    feedback = Column(Text, nullable=True)
+    timestamp = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
+    user = relationship("User", back_populates="tests")
 
 class ChatMessage(Base):
-    """Chat message model."""
-    __tablename__ = "chat_message"
+    __tablename__ = "chat_messages"
     
-    id = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('user.id'))
-    content = Column(Text)
-    sender = Column(String)  # 'user' or 'assistant'
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationship
-    user = relationship("User", back_populates="chat_messages")
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    role = Column(String, nullable=False)       # "user" or "assistant"
+    content = Column(Text, nullable=False)
+    timestamp = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
+    user = relationship("User", back_populates="chats")
+
+# ==========================================
+# University & Program Models
+# ==========================================
 
 class University(Base):
-    """University model."""
-    __tablename__ = "university"
+    __tablename__ = "universities"
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True, index=True)
-    country = Column(String)
-    city = Column(String)
-    website = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationship
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False)
+    location = Column(String, nullable=True)
+    global_ranking = Column(Integer, nullable=True)
+
     programs = relationship("Program", back_populates="university")
 
-
 class Program(Base):
-    """Academic program model."""
-    __tablename__ = "program"
+    __tablename__ = "programs"
     
-    id = Column(Integer, primary_key=True)
-    university_id = Column(Integer, ForeignKey('university.id'))
-    name = Column(String)
-    degree_level = Column(String)  # e.g., 'Masters', 'Undergraduate'
-    field = Column(String)  # e.g., 'Computer Science'
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    university_id = Column(String, ForeignKey("universities.id"), nullable=False)
+    course_name = Column(String, nullable=False)
+    degree_level = Column(String, nullable=True)
     tuition_fee = Column(Float, nullable=True)
-    duration_months = Column(Integer, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationship
-    university = relationship("University", back_populates="programs")
-    applications = relationship("Application", back_populates="program")
+    ielts_requirement = Column(Float, nullable=True)
 
+    university = relationship("University", back_populates="programs")
 
 class Application(Base):
-    """University application model."""
-    __tablename__ = "application"
+    __tablename__ = "applications"
     
-    id = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('user.id'))
-    program_id = Column(Integer, ForeignKey('program.id'))
-    status = Column(SQLEnum(ApplicationStatus), default=ApplicationStatus.DRAFT)
-    submitted_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    program_id = Column(String, ForeignKey("programs.id"), nullable=False)
+    status = Column(Enum(ApplicationStatus), default=ApplicationStatus.PENDING)
     
-    # Relationships
     user = relationship("User", back_populates="applications")
-    program = relationship("Program", back_populates="applications")
-
 
 class Scholarship(Base):
-    """Scholarship model."""
-    __tablename__ = "scholarship"
+    __tablename__ = "scholarships"
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    university_id = Column(Integer, ForeignKey('university.id'), nullable=True)
-    amount = Column(Float)
-    description = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-__all__ = [
-    "User",
-    "StudentProfile",
-    "TestSession",
-    "ChatMessage",
-    "University",
-    "Program",
-    "Application",
-    "Scholarship",
-    "user_saved_programs",
-    "ApplicationStatus",
-    "TestType",
-]
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False)
+    amount = Column(Float, nullable=True)
+    criteria = Column(Text, nullable=True)

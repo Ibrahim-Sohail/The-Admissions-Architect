@@ -28,6 +28,30 @@
             margin: 25px 0;
         }
 
+        /* --- NEW: ACTIVE NAV INDICATOR STYLES --- */
+        .landing-nav-links a {
+            position: relative; /* Needed for the underline positioning */
+            padding-bottom: 5px; 
+        }
+
+        /* Create the animated yellow underline (ignores the login button) */
+        .landing-nav-links a:not([href="/login"])::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #FFC107; /* UniHawk Yellow */
+            transition: width 0.3s ease;
+        }
+
+        /* Show full line on hover OR when the link has the 'active' class */
+        .landing-nav-links a.active::after,
+        .landing-nav-links a:not([href="/login"]):hover::after {
+            width: 100%;
+        }
+
         @media (max-width: 900px) {
             .article-split { grid-template-columns: 1fr; gap: 30px; text-align: center; }
             .teaser-box { text-align: left; }
@@ -37,16 +61,16 @@
 <body>
 
     <nav class="landing-navbar" id="navbar">
-        <a href="/" class="nav-brand" style="color: white; text-decoration: none;">
-            <img src="/images/logo.png" alt="Logo" style="filter: brightness(0) invert(1); height: 50px; transition: all 0.3s;" id="navLogo" onerror="this.src='https://via.placeholder.com/50'">
-            <span style="font-size: 22px; transition: all 0.3s;" id="navText">Admission Arch.</span>
+        <a href="/" class="nav-brand" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 12px;">
+            <img src="/images/logo.png" alt="Logo" style="filter: brightness(0) invert(1); height: 70px; transition: all 0.3s;" id="navLogo" onerror="this.src='https://via.placeholder.com/70'">
+            <span style="font-size: 24px; font-weight: bold; transition: all 0.3s;" id="navText">Admission Architect</span>
         </a>
 
         <ul class="landing-nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="#profile-building">Profile Building</a></li>
-            <li><a href="#services">Our Services</a></li>
-            <li><a href="#extra-mile">Extra Mile</a></li>
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#profile-building" class="nav-link">Profile Building</a></li>
+            <li><a href="#services" class="nav-link">Our Services</a></li>
+            <li><a href="#extra-mile" class="nav-link">Extra Mile</a></li>
             <li><a href="/login" style="color: #FFC107; font-weight: bold;">Student Login</a></li>
         </ul>
 
@@ -55,7 +79,7 @@
         </div>
     </nav>
 
-    <header class="landing-hero">
+    <header id="home" class="landing-hero">
         <h1>Mentors. Strategists. Dream Enablers.</h1>
         <p>We offer end-to-end guidance that opens doors to top global universities. Expert profile building, elite test prep, and personalized admissions strategy.</p>
         <div class="hero-btns">
@@ -103,7 +127,7 @@
                 <div class="teaser-box">
                     <p style="margin: 0; color: #555; font-size: 14px; font-weight: bold;">
                         <i class="material-icons" style="font-size: 16px; color: #8E44AD; vertical-align: middle;">lock</i> 
-                        Unlock our exclusive 1-Year Foundation and 2-Year Masterclass mentorship packages, including pricing and complete roadmaps, inside the student portal.
+                        Unlock our exclusive mentorship packages inside the student portal.
                     </p>
                 </div>
                 
@@ -147,26 +171,32 @@
         <div class="services-container">
             <div class="section-title">
                 <h2>The Extra Mile Services 🌟</h2>
-                <p>We support you until you are safely settled in your new home abroad.</p>
+                <p>We support you until you are safely settled in your new home abroad and beyond.</p>
             </div>
 
             <div class="extra-mile-grid">
                 <a href="/login" class="em-card" style="text-decoration: none;">
                     <div class="em-icon"><i class="material-icons" style="font-size:30px;">king_bed</i></div>
                     <h4 style="margin: 0 0 10px 0;">Accommodation Support</h4>
-                    <p style="margin:0; font-size:13px; color:#666;">Book a session with our housing advisors to find safe, affordable student housing or private rentals.</p>
+                    <p style="margin:0; font-size:13px; color:#666;">Book a session with our housing advisors to find safe, affordable student housing.</p>
                 </a>
 
                 <a href="/login" class="em-card" style="text-decoration: none;">
                     <div class="em-icon" style="color: #4CAF50; background: #E8F5E9;"><i class="material-icons" style="font-size:30px;">fact_check</i></div>
                     <h4 style="margin: 0 0 10px 0;">Visa Support</h4>
-                    <p style="margin:0; font-size:13px; color:#666;">Get expert guidance on Tier-4 student visa requirements, financial documents, and mock interviews.</p>
+                    <p style="margin:0; font-size:13px; color:#666;">Get expert guidance on Tier-4 student visa requirements and mock interviews.</p>
                 </a>
 
                 <a href="/login" class="em-card" style="text-decoration: none;">
                     <div class="em-icon" style="color: #FF9800; background: #FFF3E0;"><i class="material-icons" style="font-size:30px;">flight_land</i></div>
                     <h4 style="margin: 0 0 10px 0;">Airport Transfers</h4>
                     <p style="margin:0; font-size:13px; color:#666;">Arrange a secure pickup from any UK airport directly to your university accommodation.</p>
+                </a>
+
+                <a href="/info/careers" class="em-card" style="text-decoration: none;">
+                    <div class="em-icon" style="color: #8E24AA; background: #F3E5F5;"><i class="material-icons" style="font-size:30px;">work</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Career Support</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Launch your global career with post-study work options, CV building, and interview prep.</p>
                 </a>
             </div>
         </div>
@@ -185,98 +215,56 @@
     <div class="modal-overlay" id="enquireModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal()">&times;</button>
-            
             <h2>Start Your Journey</h2>
             <p>Fill out the form below and an expert counselor will contact you within 24 hours.</p>
 
-
-            
             <form class="modal-form" id="leadForm" onsubmit="submitLead(event)">
-    <input type="text" name="name" placeholder="Full Name *" required>
-    <input type="email" name="email" placeholder="Email Address *" required>
-    <input type="tel" name="phone" placeholder="Phone Number (with Country Code) *" required>
-    
-    <select name="destination" required>
-        <option value="" disabled selected>Preferred Study Destination *</option>
-        <option value="UK">United Kingdom</option>
-        <option value="USA">United States</option>
-        <option value="Canada">Canada</option>
-        <option value="Australia">Australia</option>
-        <option value="Europe">Europe</option>
-    </select>
+                <input type="text" id="name" placeholder="Full Name *" required>
+                <input type="email" id="email" placeholder="Email Address *" required>
+                <input type="tel" id="phone" placeholder="Phone Number *" required>
+                
+                <select id="destination" required>
+                    <option value="" disabled selected>Preferred Study Destination *</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="USA">United States</option>
+                </select>
+                
+                <select id="level" required>
+                    <option value="" disabled selected>Study Level *</option>
+                    <option value="Bachelors">Bachelors (Undergraduate)</option>
+                    <option value="Masters">Masters (Postgraduate)</option>
+                </select>
 
-    <select name="level" required>
-        <option value="" disabled selected>Study Level *</option>
-        <option value="Bachelors">Bachelors (Undergraduate)</option>
-        <option value="Masters">Masters (Postgraduate)</option>
-        <option value="PhD">PhD</option>
-    </select>
-
-    <button type="submit" class="calc-btn-primary" id="submitBtn" style="border:none; margin-top: 10px; cursor: pointer;">
-        Submit Enquiry
-    </button>
-</form>
-          
+                <button type="submit" class="calc-btn-primary" id="submitBtn" style="border:none; margin-top: 10px; cursor: pointer;">
+                    Submit Enquiry
+                </button>
+            </form>
             
             <div id="successMessage" style="display: none; text-align: center; padding: 20px 0;">
                 <i class="material-icons" style="font-size: 48px; color: #4CAF50; margin-bottom: 10px;">check_circle</i>
                 <h3 style="color: #333; margin:0;">Thank You!</h3>
-                <p style="color: #666; margin-top: 5px;">We have received your details. Our team will reach out to you shortly.</p>
+                <p style="color: #666; margin-top: 5px;">We have received your details.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            const logo = document.getElementById('navLogo');
-            const text = document.getElementById('navText');
-            // Select all links in the center navbar
-            const links = document.querySelectorAll('.landing-nav-links a:not([href="/login"])');
-            
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-                logo.style.filter = 'none'; // Revert to colored logo
-                text.style.color = '#1976D2';
-            } else {
-                nav.classList.remove('scrolled');
-                logo.style.filter = 'brightness(0) invert(1)'; // Make white
-                text.style.color = 'white';
-            }
-        });
-
-        // 2. Scroll Animation Observer (Fade In Elements)
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.fade-in-section').forEach((el) => observer.observe(el));
-
-        // 3. Number Counter Animation for Stats
+        // 1. Intersection Observer for Counters
         const counters = document.querySelectorAll('.counter');
-        const speed = 200; 
-
         const countObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const counter = entry.target;
                     const target = +counter.getAttribute('data-target');
-                    
+                    let count = 0;
+                    const increment = target / 50;
                     const updateCount = () => {
-                        const count = +counter.innerText.replace(/\D/g, ''); 
-                        const inc = target / speed;
-
+                        count += increment;
                         if (count < target) {
-                            counter.innerText = Math.ceil(count + inc) + (target > 1000 ? '+' : '');
-                            setTimeout(updateCount, 15);
+                            counter.innerText = Math.ceil(count);
+                            setTimeout(updateCount, 30);
                         } else {
-                            counter.innerText = target + (target >= 75 ? '+' : '');
-                            if (target === 12000) counter.innerText = "12k+"; 
+                            counter.innerText = target;
                         }
                     };
                     updateCount();
@@ -284,18 +272,14 @@
                 }
             });
         }, { threshold: 0.5 });
-
         counters.forEach(counter => countObserver.observe(counter));
 
-        // 4. Modal Logic
+        // 2. Modal Logic
         const modal = document.getElementById('enquireModal');
         const leadForm = document.getElementById('leadForm');
         const successMsg = document.getElementById('successMessage');
 
-        function openModal() {
-            modal.classList.add('active');
-        }
-
+        function openModal() { modal.classList.add('active'); }
         function closeModal() {
             modal.classList.remove('active');
             setTimeout(() => {
@@ -306,44 +290,53 @@
                 document.getElementById('submitBtn').style.opacity = "1";
             }, 300); 
         }
+        
+        modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
 
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
+        // 3. THE FIX: Real API Fetch Request to trigger the Email
+        // 3. THE FIX: Real API Fetch Request to trigger the Email
         async function submitLead(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    btn.innerText = "Sending...";
-    btn.style.opacity = "0.7";
+            e.preventDefault(); 
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Sending...";
+            btn.style.opacity = "0.7";
 
-    const formData = new FormData(leadForm);
-    const body = Object.fromEntries(formData.entries());
+            // ✅ FIX: Cleanly grabbing exactly what the user typed/selected by ID
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                destination: document.getElementById('destination').value,
+                level: document.getElementById('level').value
+            };
 
-    try {
-        const res = await fetch('/enquire', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        const data = await res.json();
-        if (data.success) {
-            leadForm.style.display = 'none';
-            successMsg.style.display = 'block';
-            setTimeout(() => closeModal(), 3000);
-        } else {
-            btn.innerText = "Submit Enquiry";
-            btn.style.opacity = "1";
-            alert(data.error || 'Something went wrong. Please try again.');
+            try {
+                // Talk to the /enquire route in app.js
+                const response = await fetch('/enquire', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Success! Show the checkmark animation
+                    leadForm.style.display = 'none';
+                    successMsg.style.display = 'block';
+                    setTimeout(() => { closeModal(); }, 3000);
+                } else {
+                    alert("Error: " + data.error);
+                    btn.innerText = "Submit Enquiry";
+                    btn.style.opacity = "1";
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to send enquiry. Please check your internet connection.");
+                btn.innerText = "Submit Enquiry";
+                btn.style.opacity = "1";
+            }
         }
-    } catch (err) {
-        btn.innerText = "Submit Enquiry";
-        btn.style.opacity = "1";
-        alert('Failed to submit. Please try again.');
-    }
-}
     </script>
 </body>
 </html>

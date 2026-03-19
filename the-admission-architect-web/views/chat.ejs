@@ -1,87 +1,244 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Consultant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRE AI Assistant | The Admission Architect</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .chat-wrapper { display: flex; flex-direction: column; height: calc(100vh - 80px); }
-        #chat-box { flex: 1; overflow-y: auto; padding: 20px 10px 100px 10px; display: flex; flex-direction: column; gap: 12px; }
-        .msg-user { background: #5A7B95; color: white; padding: 12px 16px; border-radius: 18px 18px 4px 18px; max-width: 75%; align-self: flex-end; font-size: 15px; }
-        .msg-bot { background: #f0f0f0; color: #333; padding: 12px 16px; border-radius: 18px 18px 18px 4px; max-width: 75%; align-self: flex-start; font-size: 15px; }
-        .msg-typing { background: #f0f0f0; padding: 12px 16px; border-radius: 18px; align-self: flex-start; color: #999; font-style: italic; }
-        .input-bar { position: fixed; bottom: 65px; left: 0; right: 0; display: flex; padding: 10px 15px; background: white; border-top: 1px solid #eee; gap: 10px; max-width: 620px; margin: 0 auto; }
-        #msgInput { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 25px; font-size: 15px; outline: none; }
-        #msgInput:focus { border-color: #5A7B95; }
-        .send-btn { background: #5A7B95; color: white; border: none; border-radius: 50%; width: 46px; height: 46px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .send-btn:hover { background: #476278; }
+        body { background-color: #F9FAFB; height: 100vh; display: flex; flex-direction: column; margin: 0; }
+        
+        .chat-layout {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 20px auto;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        /* GRE Theme Header (Teal/Green gradient) */
+        .chat-header {
+            background: linear-gradient(135deg, #00897B, #00BFA5);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .chat-header-icon {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+        }
+        .chat-header-info h2 { margin: 0; font-size: 20px; }
+        .chat-header-info p { margin: 2px 0 0; font-size: 13px; opacity: 0.9; }
+
+        .chat-window {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #FAFAFA;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .msg-bot {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #E0E0E0;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: #00897B;
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,137,123,0.2);
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 1px solid #E0E0E0;
+            display: none;
+            color: #888;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* Input Area */
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .template-chips {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .template-chips::-webkit-scrollbar { height: 4px; }
+        .template-chips::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+        
+        .chip {
+            background: #E0F2F1;
+            color: #00796B;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .chip:hover { border-color: #00897B; background: #B2DFDB; }
+
+        .input-group { display: flex; gap: 10px; }
+        
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus { border-color: #00897B; }
+        
+        .send-btn {
+            background: #00897B;
+            color: white;
+            border: none;
+            width: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .send-btn:hover { background: #00796B; transform: scale(1.05); }
+
     </style>
 </head>
 <body>
-    <div class="container chat-wrapper">
-        <h3 style="margin: 15px 0 5px; color:#5A7B95;">🤖 AI Study Abroad Consultant</h3>
-        <p style="color:#999; font-size:13px; margin:0 0 10px;">Ask me anything about universities, IELTS, GRE, visas, or studying abroad.</p>
-
-        <div id="chat-box">
-            <div class="msg-bot">Hi! I'm your AI study abroad consultant. Ask me anything about universities, IELTS/GRE prep, UK visas, scholarships, or applications! 🎓</div>
-        </div>
-    </div>
-
-    <div class="input-bar">
-        <input type="text" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()">
-        <button class="send-btn" onclick="sendMessage()">
-            <i class="material-icons">send</i>
-        </button>
-    </div>
 
     <%- include('partials/navbar') %>
 
+    <div class="chat-layout">
+        <div class="chat-header">
+            <div class="chat-header-icon"><i class="material-icons" style="font-size:28px;">menu_book</i></div>
+            <div class="chat-header-info">
+                <h2>GRE Test Tutor</h2>
+                <p>Ask me about Verbal, Quant, or Analytical Writing</p>
+            </div>
+        </div>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="message msg-bot">
+                Hello! I am your dedicated GRE AI Tutor. Whether you need help breaking down a tricky Quantitative reasoning problem, understanding complex Verbal vocabulary, or practicing an Analytical Writing prompt, I'm here to help. What are we studying today?
+            </div>
+            <div class="typing-indicator" id="typingIndicator">Tutor is typing...</div>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="template-chips" id="templateContainer">
+                <div class="chip" onclick="sendTemplate('Can you explain how to solve combination and permutation problems?')">Combination / Permutations</div>
+                <div class="chip" onclick="sendTemplate('Give me 5 high-frequency GRE vocabulary words with example sentences.')">High-Frequency Vocab</div>
+                <div class="chip" onclick="sendTemplate('Can you generate a practice Analytical Writing prompt for me?')">Practice Essay Prompt</div>
+                <div class="chip" onclick="sendTemplate('What is the best strategy for reading comprehension questions?')">Reading Strategy</div>
+            </div>
+            <form class="input-group" onsubmit="handleSend(event)">
+                <input type="text" id="userInput" placeholder="Type your GRE question here..." autocomplete="off">
+                <button type="submit" class="send-btn"><i class="material-icons">send</i></button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        let chatHistory = [];
+        const chatWindow = document.getElementById('chatWindow');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const templateContainer = document.getElementById('templateContainer');
 
-        async function sendMessage() {
-            const input = document.getElementById('msgInput');
-            const chatBox = document.getElementById('chat-box');
-            const msg = input.value.trim();
-            if (!msg) return;
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `message msg-${sender}`;
+            // Simple markdown handling for bold text and line breaks
+            div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            chatWindow.insertBefore(div, typingIndicator);
+            scrollToBottom();
+        }
 
-            // Show user message
-            chatBox.innerHTML += `<div class="msg-user">${escapeHtml(msg)}</div>`;
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function scrollToBottom() {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
 
-            // Show typing indicator
-            const typingId = 'typing_' + Date.now();
-            chatBox.innerHTML += `<div class="msg-typing" id="${typingId}">Thinking...</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function sendTemplate(text) {
+            templateContainer.style.display = 'none';
+            processMessage(text);
+        }
 
-            // Add to history
-            chatHistory.push({ role: 'user', content: msg });
+        function handleSend(e) {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+            userInput.value = '';
+            templateContainer.style.display = 'none';
+            processMessage(text);
+        }
+
+        async function processMessage(text) {
+            appendMessage(text, 'user');
+            typingIndicator.style.display = 'block';
+            scrollToBottom();
 
             try {
                 const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg, history: chatHistory.slice(-10) })
+                    // ✅ We added the bot_type here!
+                    body: JSON.stringify({ message: text, bot_type: 'gre' }) 
                 });
                 const data = await res.json();
-                const reply = data.reply || 'Sorry, I could not respond right now.';
-
-                // Remove typing indicator and show reply
-                document.getElementById(typingId)?.remove();
-                chatBox.innerHTML += `<div class="msg-bot">${reply.replace(/\n/g, '<br>')}</div>`;
-                chatHistory.push({ role: 'assistant', content: reply });
-
+                typingIndicator.style.display = 'none';
+                if (data.error) {
+                    appendMessage('Sorry, something went wrong: ' + data.error, 'bot');
+                } else {
+                    appendMessage(data.reply || data.response || data.message || JSON.stringify(data), 'bot');
+                }
             } catch (err) {
-                document.getElementById(typingId)?.remove();
-                chatBox.innerHTML += `<div class="msg-bot" style="color:red;">Error: Could not reach the AI. Please try again.</div>`;
+                typingIndicator.style.display = 'none';
+                appendMessage('Connection error. Please check your network and try again.', 'bot');
             }
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
     </script>
 </body>

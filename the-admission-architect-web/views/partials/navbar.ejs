@@ -1,10 +1,10 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
 
 <nav class="top-nav">
-    <a href="/home" class="nav-brand">
-        <img src="/images/logo.png" alt="Admission Architect" onerror="this.src='https://via.placeholder.com/50'">
-        <span>Admission Arch.</span>
-    </a>
+    <a href="/home" class="nav-brand" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+    <img src="/images/logo.png" alt="Logo" style="height: 65px; object-fit: contain;"> 
+    <span style="font-size: 24px; font-weight: bold; color: #5A7B95;">Admission Architect</span>
+</a>
 
     <ul class="nav-links">
         <li>
@@ -32,9 +32,9 @@
             </a>
         </li>
         <li>
-            <a href="/chat" class="nav-item <%= page === 'chat' ? 'active' : '' %>">
-                <i class="<%= page === 'chat' ? 'material-icons' : 'material-icons-outlined' %>">chat</i>
-                <span>GRE AI</span>
+               <a href="/support-bot" class="nav-link <%= page === 'support-bot' ? 'active' : '' %>">
+                <i class="<%= page === 'support-bot' ? 'material-icons' : 'material-icons-outlined' %>">smart_toy</i>
+                <span>AI Assistant</span>
             </a>
         </li>
     </ul>

@@ -1,16 +1,17 @@
 """
-gre_module.py — GRE Preparation using Groq AI.
+gre_module.py — GRE Preparation using Groq AI (Randomized).
 """
 import os
 import json
+import random
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from models import TestSession, TestType, get_sync_session
+from database.models import TestSession, TestType
+from database.connection import get_sync_session
 
-# --- Groq Setup ---
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
     raise RuntimeError("GROQ_API_KEY not found in .env")
@@ -18,23 +19,25 @@ if not api_key:
 client = Groq(api_key=api_key)
 
 def ask_groq(prompt: str) -> str:
-    """Send a prompt to Groq and return the text response."""
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.7,
+        temperature=0.9, # Higher temperature for more creative/random questions
     )
     return response.choices[0].message.content
-
 
 class GREPrep:
     def __init__(self, user_id):
         self.user_id = user_id
 
     def generate_question(self, topic):
-        """Generates a GRE question and returns a dict."""
+        # ✅ Injecting random subjects to force the AI to write new questions!
+        subjects = ['astronomy', 'biology', 'ancient history', 'literature', 'technology', 'art history', 'economics', 'philosophy', 'geology', 'political science']
+        subject = random.choice(subjects)
+
         prompt = f"""
-        You are a GRE Test Tutor. Generate a difficult {topic} question.
+        You are a GRE Test Tutor. Generate a highly difficult, completely unique {topic} question about {subject}. 
+        Ensure it is completely different from standard examples.
         Output STRICTLY in this JSON format (no markdown, no extra text):
         {{
             "question_text": "The actual question...",
@@ -51,7 +54,6 @@ class GREPrep:
             return {"error": f"Failed to generate question: {str(e)}"}
 
     def grade_essay(self, essay_text):
-        """Grades a GRE Analytical Writing essay."""
         prompt = f"""
         Grade this GRE Analytical Writing essay on a scale of 0.0 to 6.0.
         Provide feedback on grammar, structure, and vocabulary.
@@ -70,7 +72,6 @@ class GREPrep:
             return {"score": 0, "feedback": f"Error grading essay: {str(e)}"}
 
     def save_result(self, module, score, feedback):
-        """Saves test result to DB with correct types."""
         session = get_sync_session()
         try:
             new_session = TestSession(

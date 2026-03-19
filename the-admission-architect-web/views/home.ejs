@@ -7,6 +7,8 @@
 </head>
 <body>
 
+    <%- include('partials/navbar') %>
+
     <div class="container">
         
         <div class="hero-section">
@@ -167,29 +169,35 @@
         <div class="content-section" style="background: transparent; box-shadow: none; padding: 0;">
             <div class="section-header">
                 <h2>The Extra Mile Services 🌟</h2>
-                <p>We support you until you are safely settled in your new home.</p>
+                <p>We support you until you are safely settled in your new home and beyond.</p>
             </div>
 
             <div class="extra-mile-grid">
-                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="em-card">
+                <a href="/booking" class="em-card" style="text-decoration: none;">
                     <div class="em-icon"><i class="material-icons" style="font-size:30px;">king_bed</i></div>
                     <h4 style="margin: 0 0 10px 0;">Accommodation Support</h4>
                     <p style="margin:0; font-size:13px; color:#666;">Book a session with our housing advisors to find safe, affordable student housing or private rentals.</p>
                 </a>
 
-                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2jR4-nhq5qQiw75LIJClmQrP8M5mIvdagD1tZSAGZkxOKsrKnROvIx9BZY9IVJVQzetYvJUtJv" target="_blank" class="em-card">
+                <a href="/booking" class="em-card" style="text-decoration: none;">
                     <div class="em-icon" style="color: #4CAF50; background: #E8F5E9;"><i class="material-icons" style="font-size:30px;">fact_check</i></div>
                     <h4 style="margin: 0 0 10px 0;">Visa Support</h4>
                     <p style="margin:0; font-size:13px; color:#666;">Get expert guidance on Tier-4 student visa requirements, financial documents, and mock interviews.</p>
                 </a>
 
-                <a href="/airport-transfer" class="em-card">
+                <a href="/airport-transfer" class="em-card" style="text-decoration: none;">
                     <div class="em-icon" style="color: #FF9800; background: #FFF3E0;"><i class="material-icons" style="font-size:30px;">flight_land</i></div>
                     <h4 style="margin: 0 0 10px 0;">Airport Transfers</h4>
                     <p style="margin:0; font-size:13px; color:#666;">Arrange a secure pickup from any UK airport directly to your university accommodation.</p>
                 </a>
+
+                <a href="/booking" class="em-card" style="text-decoration: none;">
+                    <div class="em-icon" style="color: #8E24AA; background: #F3E5F5;"><i class="material-icons" style="font-size:30px;">work</i></div>
+                    <h4 style="margin: 0 0 10px 0;">Career Support</h4>
+                    <p style="margin:0; font-size:13px; color:#666;">Book a session for CV building, interview prep, and guidance on post-study work options.</p>
+                </a>
             </div>
-        </div>
+        </div> 
 
         <div class="content-section">
             <div class="section-header">
@@ -257,8 +265,7 @@
             </div>
         </div>
 
-    </div> <%- include('partials/navbar') %>
-    <%- include('partials/footer') %>
+    </div> <%- include('partials/footer') %>
 
 </body>
 </html>
