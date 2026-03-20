@@ -255,3 +255,4 @@ app.get('/privacy-policy', (req, res) => { res.render('info-privacy', { page: 'l
 app.get('/terms-of-service', (req, res) => { res.render('info-terms', { page: 'legal' }); });
 
 app.listen(port, () => console.log(`✅ Frontend running at http://localhost:${port}`));
+module.exports = app; // ✅ Required for Vercel Serverless deployment

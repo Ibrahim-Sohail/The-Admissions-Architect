@@ -10,8 +10,8 @@
         /* Specific Styles for the University Finder Form */
         .finder-form {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two Equal Columns */
-            gap: 20px; /* Space between columns */
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
@@ -27,7 +27,6 @@
             font-size: 14px;
         }
 
-        /* Red asterisk for required fields */
         .form-group label::after {
             content: " *";
             color: #d32f2f;
@@ -46,15 +45,9 @@
             width: 100%;
         }
 
-        .form-select:focus {
-            border-color: #5A7B95;
-        }
+        .form-select:focus { border-color: #5A7B95; }
+        .form-select.error { border-color: #d32f2f; }
 
-        .form-select.error {
-            border-color: #d32f2f;
-        }
-
-        /* --- THE NEW BEAUTIFUL BUTTON --- */
         .search-btn {
             background: linear-gradient(135deg, #1976D2, #5A7B95);
             color: white;
@@ -80,11 +73,8 @@
             background: linear-gradient(135deg, #1565C0, #476278);
         }
 
-        .search-btn:active {
-            transform: scale(0.98);
-        }
+        .search-btn:active { transform: scale(0.98); }
 
-        /* --- TOAST NOTIFICATION STYLES --- */
         #toast {
             visibility: hidden;
             min-width: 250px; 
@@ -110,7 +100,6 @@
             bottom: 50px; 
         }
 
-        /* Responsive: Stack columns on mobile */
         @media (max-width: 600px) {
             .finder-form { grid-template-columns: 1fr; }
         }
@@ -217,7 +206,6 @@
                 // Render the real data from your Python Recommender
                 if(data.recommendations && data.recommendations.length > 0){
                     data.recommendations.forEach(uni => {
-                        // Formatting the tuition nicely
                         const tuitionStr = uni.tuition ? `$${uni.tuition.toLocaleString()}/yr` : 'N/A';
                         
                         html += `
@@ -249,7 +237,6 @@
             }
         }
         
-        // Toast Logic
         function toggleFav(name) {
             showToast(`${name} added to favorites!`);
         }
