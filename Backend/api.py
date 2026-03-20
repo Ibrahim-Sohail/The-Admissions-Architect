@@ -31,7 +31,7 @@ app = FastAPI(title="Admission Architect API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_origins=["*"], # ✅ Changed from localhost to allow all (you can restrict this later to your Vercel domain!)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
