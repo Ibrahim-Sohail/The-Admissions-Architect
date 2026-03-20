@@ -17,3 +17,13 @@ gTTS
 SpeechRecognition
 #pyaudio  # Required for microphone input
 python-dotenv
+
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+asyncpg
+bcrypt
+PyJWT
+groq
+python-dotenv
